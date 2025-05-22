@@ -15,7 +15,8 @@ jobs:
       - name: working-directory
         run: |
           dir
-          ./connectivity
+
+          cd connectivity
           dir
 
       - name: login
