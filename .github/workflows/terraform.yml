@@ -44,6 +44,10 @@ jobs:
           cd connectivity
           dir
 
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./connectivity
+
       - name: "Terraform init"
         id: init
         run: |
