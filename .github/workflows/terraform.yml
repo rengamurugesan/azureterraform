@@ -53,4 +53,4 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          working-directory: "$GITHUB_WORKSPACE/connectivity"
+          # working-directory: "./connectivity"
