@@ -1,44 +1,20 @@
-name: Azure Landing Zone Deployment
+# File: .github/workflows/workflow.yml
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
+
+name: Run Azure Login With a Service Principal Secret
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # - uses: azure/login@v2
-      #   with:
-      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Azure login
-        uses: azure/login@v2
+      - uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          auth-type: "SERVICE_PRINCIPAL"
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # - name: Deploy Landing Zone
-      #   uses: azure/arm-deploy@v1
-      #   with:
-      #     subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      #     resourceGroupName: "landing-zone-rg"
-      #     template: "./landing-zone.bicep"
-      #     parameters: "./landing-zone-parameters.json"
-
-      # - name: 'Terraform init'
-      #   id: init
-      #   run: |
-      #     terraform init --backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" --backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" --backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" --backend-config="client_secret=${{ secrets.AZURE_CLIENT_SECRET }}"
-      #   env:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      #     client_secret : ${{ secrets.AZURE_CLIENT_SECRET }}
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
