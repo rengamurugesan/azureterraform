@@ -39,9 +39,10 @@ jobs:
 
       - name: test
         run: |
-          ${GITHUB_WORKSPACE}
           echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          dir
           cd connectivity
+          dir
 
       - name: "Terraform init"
         id: init
