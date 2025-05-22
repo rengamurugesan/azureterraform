@@ -37,6 +37,12 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
+      - name: test
+        run: |
+          ${GITHUB_WORKSPACE}
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          cd connectivity
+
       - name: "Terraform init"
         id: init
         run: |
