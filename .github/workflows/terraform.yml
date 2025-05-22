@@ -10,6 +10,9 @@ jobs:
     environment: development
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: login
         run: |
           echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
