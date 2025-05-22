@@ -24,6 +24,9 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
       - name: "Terraform init"
         id: init
         run: |
