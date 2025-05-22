@@ -15,7 +15,7 @@ jobs:
       - name: working-directory
         run: |
           dir
-          echo "working-directory: ./connectivity" >> $GITHUB_ENV
+          ./connectivity
           dir
 
       - name: login
