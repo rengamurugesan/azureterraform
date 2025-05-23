@@ -68,7 +68,7 @@ jobs:
       - name: test1
         uses: azure/login@v2
         with:
-          creds: ${{ var.AzURE_CREDENTIALS }}
+          creds: ${{ vars.AzURE_CREDENTIALS }}
 
       - name: test1
         uses: azure/login@v2
