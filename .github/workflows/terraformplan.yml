@@ -29,22 +29,29 @@ jobs:
       #     az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
       - name: test
         run: |
-          if [ -z "{{ secrets.AZURE_CREDENTIALS }}" ]; then
-            echo "CLIENT_ID is missing!"
+          if [ -z "{{ secrets.AZURE_TENANT_ID }}" ]; then
+            echo "AZURE_TENANT_ID is missing!"
             exit 1
           fi
-          echo "CLIENT_ID is set."
+          echo "AZURE_TENANT_ID is set."
 
+          if [ -z "${{ secrets[matrix.subscription_id] }}" ]; then
+            echo "subscription_id is missing!"
+            exit 1
+          fi
+          echo "subscription_id is set."
 
-          echo client-id: ${{ secrets[matrix.client_id_secret]  != '' && 'Set' || 'Not Set' }}
-          echo tenant-id: ${{ secrets[matrix.tenant_id]  != '' && 'Set' || 'Not Set'}}
-          echo subscription-id: ${{ secrets[matrix.subscription_id]  != '' && 'Set' || 'Not Set' }}
-          echo client_secret: ${{ secrets[matrix.client_secret_secret]   != '' && 'Set' || 'Not Set'}}
+          if [ -z "${{ secrets[matrix.client_id] }}" ]; then
+            echo "client_id is missing!"
+            exit 1
+          fi
+          echo "client_id is set."
+
         env:
-          client-id: ${{ secrets[matrix.client_id_secret] }}
+          client-id: ${{ secrets[matrix.client_id] }}
           tenant-id: ${{ secrets[matrix.tenant_id] }}
           subscription-id: ${{ secrets[matrix.subscription_id] }}
-          client_secret: ${{ secrets[matrix.client_secret_secret] }}
+          client_secret: ${{ secrets[matrix.client_id_secret] }}
 
       - uses: azure/login@v2
         with:
