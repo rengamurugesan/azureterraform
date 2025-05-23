@@ -17,11 +17,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: login
-        run: |
-          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
-          az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-
+      # - name: login
+      #   run: |
+      #     echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
+      #     az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         # with:
