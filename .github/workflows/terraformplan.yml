@@ -11,9 +11,9 @@ jobs:
     strategy:
       matrix:
         region: [eastus, westus]
-        environment: [development]
+        environment: [qa]
         include:
-          - environment: development
+          - environment: qa
             tenant_id: AZURE_TENANT_ID
             client_id_secret: AZURE_CLIENT_SECRET
             client_id: AZURE_CLIENT_ID
@@ -35,13 +35,13 @@ jobs:
           fi
           echo "AZURE_TENANT_ID is set."
 
-          if [ -z "${{ secrets[matrix.subscription_id] }}" ]; then
+          if [ -z "{{ secrets[matrix.subscription_id] }}" ]; then
             echo "subscription_id is missing!"
             exit 1
           fi
           echo "subscription_id is set."
 
-          if [ -z "${{ secrets[matrix.client_id] }}" ]; then
+          if [ -z "{{ secrets[matrix.client_id] }}" ]; then
             echo "client_id is missing!"
             exit 1
           fi
