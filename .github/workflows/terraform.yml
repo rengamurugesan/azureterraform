@@ -1,6 +1,6 @@
 # File: .github/workflows/workflow.yml
 
-on: [push]
+on: [workflow_dispatch]
 
 name: Run Azure Login With a Service Principal Secret
 
@@ -12,12 +12,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: working-directory
-        run: |
-          dir
-
-          cd connectivity
-          dir
 
       - name: login
         run: |
