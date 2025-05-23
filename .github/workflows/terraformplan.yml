@@ -35,6 +35,11 @@ jobs:
       #     az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
       - name: test
         run: |
+          if [ -z "{{ secrets.AZURE_CREDENTIALS }}" ]; then
+            echo "CLIENT_ID is missing!"
+            exit 1
+          fi
+          echo "CLIENT_ID is set."
 
 
           echo client-id: ${{ secrets[matrix.client_id_secret]  != '' && 'Set' || 'Not Set' }}
