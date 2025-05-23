@@ -33,6 +33,18 @@ jobs:
       #   run: |
       #     echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
       #     az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+      - name: test
+        run: |
+
+          echo client-id: ${{ secrets[matrix.client_id_secret] }}
+          echo tenant-id: ${{ secrets[matrix.tenant_id] }}
+          echo subscription-id: ${{ secrets[matrix.subscription_id] }}
+          echo client_secret: ${{ secrets[matrix.client_secret_secret] }}
+        env:
+          client-id: ${{ secrets[matrix.client_id_secret] }}
+          tenant-id: ${{ secrets[matrix.tenant_id] }}
+          subscription-id: ${{ secrets[matrix.subscription_id] }}
+          client_secret: ${{ secrets[matrix.client_secret_secret] }}
 
       - uses: azure/login@v2
         with:
