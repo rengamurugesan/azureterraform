@@ -67,14 +67,27 @@ jobs:
 
       - name: test1
         uses: azure/login@v2
+        with:
+          creds: ${{ var.AzURE_CREDENTIALS }}
+
+      - name: test1
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets[matrix.client_id] }}
+          client-secret: ${{ secrets[matrix.client_secret] }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+          # creds: '{"clientId":"{{ secrets[matrix.client_id] }}","clientSecret":"{{ secrets[matrix.client_id_secret] }}","subscriptionId":"{{ secrets[matrix.subscription_id] }}","tenantId":"{{ secrets[matrix.tenant_id] }}"}'
+          # auth-type: SERVICE_PRINCIPAL
         # with:
         #   creds: '{"clientId":"{{ secrets[matrix.client_id] }}","clientSecret":"{{ secrets[matrix.client_id_secret] }}","subscriptionId":"{{ secrets[matrix.subscription_id] }}","tenantId":"{{ secrets[matrix.tenant_id] }}"}'
         #   auth-type: SERVICE_PRINCIPAL
-        env:
-          client-id: "{{ secrets[matrix.client_id] }}"
-          tenant-id: "{{ secrets[matrix.tenant_id] }}"
-          subscription-id: "{{ secrets[matrix.subscription_id] }}"
-          client_secret: "{{ secrets[matrix.client_id_secret] }}"
+        # env:
+        #   client-id: "{{ secrets[matrix.client_id] }}"
+        #   tenant-id: "{{ secrets[matrix.tenant_id] }}"
+        #   subscription-id: "{{ secrets[matrix.subscription_id] }}"
+        #   client_secret: "{{ secrets[matrix.client_id_secret] }}"
         # client-id: "${{ secrets[matrix.client_id_secret] }}"
         # client-secret: "${{ secrets[matrix.client_secret_secret] }}"
         # tenant-id: "${{ secrets.AZURE_TENANT_ID }}"
