@@ -73,7 +73,7 @@ jobs:
       - name: test1
         uses: azure/login@v2
         with:
-          auth-type: service-principal
+          auth-type: SERVICE_PRINCIPAL
           client-id: ${{ secrets[matrix.client_id] }}
           client-secret: ${{ secrets[matrix.client_secret] }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
