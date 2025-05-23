@@ -36,10 +36,11 @@ jobs:
       - name: test
         run: |
 
-          echo client-id: ${{ secrets[matrix.client_id_secret] }}
-          echo tenant-id: ${{ secrets[matrix.tenant_id] }}
-          echo subscription-id: ${{ secrets[matrix.subscription_id] }}
-          echo client_secret: ${{ secrets[matrix.client_secret_secret] }}
+
+          echo client-id: ${{ secrets[matrix.client_id_secret]  != '' && 'Set' || 'Not Set' }}
+          echo tenant-id: ${{ secrets[matrix.tenant_id]  != '' && 'Set' || 'Not Set'}}
+          echo subscription-id: ${{ secrets[matrix.subscription_id]  != '' && 'Set' || 'Not Set' }}
+          echo client_secret: ${{ secrets[matrix.client_secret_secret]   != '' && 'Set' || 'Not Set'}}
         env:
           client-id: ${{ secrets[matrix.client_id_secret] }}
           tenant-id: ${{ secrets[matrix.tenant_id] }}
