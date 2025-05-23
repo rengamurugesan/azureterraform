@@ -12,17 +12,17 @@ jobs:
       matrix:
         region: [eastus, westus]
         environment: [qa, development]
-        include:
-          - environment: qa
-            tenant_id: AZURE_TENANT_ID
-            client_id_secret: AZURE_CLIENT_SECRET
-            client_id: AZURE_CLIENT_ID
-            subscription_id: AZURE_SUBSCRIPTION_ID
-          - environment: development
-            tenant_id: AZURE_TENANT_ID
-            client_id_secret: AZURE_CLIENT_SECRET
-            client_id: AZURE_CLIENT_ID
-            subscription_id: AZURE_SUBSCRIPTION_ID
+        # include:
+        #   - environment: qa
+        #     tenant_id: AZURE_TENANT_ID
+        #     client_id_secret: AZURE_CLIENT_SECRET
+        #     client_id: AZURE_CLIENT_ID
+        #     subscription_id: AZURE_SUBSCRIPTION_ID
+        #   - environment: development
+        #     tenant_id: AZURE_TENANT_ID
+        #     client_id_secret: AZURE_CLIENT_SECRET
+        #     client_id: AZURE_CLIENT_ID
+        #     subscription_id: AZURE_SUBSCRIPTION_ID
 
     steps:
       - name: Checkout Repository
