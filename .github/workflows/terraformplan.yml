@@ -11,9 +11,14 @@ jobs:
     strategy:
       matrix:
         region: [eastus, westus]
-        environment: [qa]
+        environment: [qa, development]
         include:
           - environment: qa
+            tenant_id: AZURE_TENANT_ID
+            client_id_secret: AZURE_CLIENT_SECRET
+            client_id: AZURE_CLIENT_ID
+            subscription_id: AZURE_SUBSCRIPTION_ID
+          - environment: development
             tenant_id: AZURE_TENANT_ID
             client_id_secret: AZURE_CLIENT_SECRET
             client_id: AZURE_CLIENT_ID
@@ -54,21 +59,22 @@ jobs:
           fi
           echo "tenant_id is set."
 
-        env:
-          client-id: ${{ secrets[matrix.client_id] }}
-          tenant-id: ${{ secrets[matrix.tenant_id] }}
-          subscription-id: ${{ secrets[matrix.subscription_id] }}
-          client_secret: ${{ secrets[matrix.client_id_secret] }}
+        # env:
+        #   client-id: ${{ secrets[matrix.client_id] }}
+        #   tenant-id: ${{ secrets[matrix.tenant_id] }}
+        #   subscription-id: ${{ secrets[matrix.subscription_id] }}
+        #   client_secret: ${{ secrets[matrix.client_id_secret] }}
 
-      - uses: azure/login@v2
+      - name: test1
+        uses: azure/login@v2
         # with:
         #   creds: '{"clientId":"{{ secrets[matrix.client_id] }}","clientSecret":"{{ secrets[matrix.client_id_secret] }}","subscriptionId":"{{ secrets[matrix.subscription_id] }}","tenantId":"{{ secrets[matrix.tenant_id] }}"}'
         #   auth-type: SERVICE_PRINCIPAL
         env:
-          client-id: "${{ secrets[matrix.client_id] }}"
-          tenant-id: ${{ secrets[matrix.tenant_id] }}
-          subscription-id: ${{ secrets[matrix.subscription_id] }}
-          client_secret: ${{ secrets[matrix.client_id_secret] }}
+          client-id: "{{ secrets[matrix.client_id] }}"
+          tenant-id: "{{ secrets[matrix.tenant_id] }}"
+          subscription-id: "{{ secrets[matrix.subscription_id] }}"
+          client_secret: "{{ secrets[matrix.client_id_secret] }}"
         # client-id: "${{ secrets[matrix.client_id_secret] }}"
         # client-secret: "${{ secrets[matrix.client_secret_secret] }}"
         # tenant-id: "${{ secrets.AZURE_TENANT_ID }}"
