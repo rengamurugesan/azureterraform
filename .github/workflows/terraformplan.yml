@@ -14,10 +14,10 @@ jobs:
         environment: [development]
         include:
           - environment: development
-            tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-            client_id_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-            # client_id: ${{ secrets.AZURE_CLIENT_ID }}
-            # subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            tenant_id: AZURE_TENANT_ID
+            client_id_secret: AZURE_CLIENT_SECRET
+            client_id: AZURE_CLIENT_ID
+            subscription_id: AZURE_SUBSCRIPTION_ID
           # - environment: test
           #   client_id_secret: TEST_AZURE_CLIENT_ID
           #   client_secret_secret: TEST_AZURE_CLIENT_SECRET
