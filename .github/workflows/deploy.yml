@@ -1,0 +1,42 @@
+name: Azure Landing Zone Deployment
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      primary_region:
+        required: true
+        type: string
+      secondary_region:
+        required: true
+        type: string
+      subscription_id:
+        required: true
+        type: string
+    secrets:
+      AZURE_CREDENTIALS:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        region:
+          ["${{ inputs.primary_region }}", "${{ inputs.secondary_region }}"]
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          subscriptionId: ${{ inputs.subscription_id }}
+
+      - name: Deploy Landing Zone
+        run: terraform apply -var-file=${{ inputs.environment }}.tfvars -auto-approve
+        working-directory: ./terraform-landing-zone

@@ -1,0 +1,51 @@
+name: Terraform Plan for Paired Regions
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment (non-prod/prod)"
+        required: true
+        default: "non-prod"
+      primary_region:
+        description: "Primary Azure region"
+        required: true
+        default: "East US"
+      secondary_region:
+        description: "Secondary Azure region (paired)"
+        required: true
+        default: "West US"
+      subscription_id:
+        description: "Azure Subscription ID"
+        required: true
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        region:
+          ["${{ inputs.primary_region }}", "${{ inputs.secondary_region }}"]
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./terraform-landing-zone
+
+      - name: Generate Terraform Plan for ${{ matrix.region }}
+        run: terraform plan -var-file=${{ inputs.environment }}.tfvars -out=tfplan-${{ matrix.region }}
+        working-directory: ./terraform-landing-zone
+
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ matrix.region }}
+          path: ./terraform-landing-zone/tfplan-${{ matrix.region }}
