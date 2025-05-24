@@ -38,7 +38,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: terraform fmt
+      - name: Terraform Format Check
         run: terraform fmt -check
         working-directory: ./connectivity
 
@@ -67,4 +67,4 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./connectivity
-        run: terraform plan -var="location=${{ matrix.region }}" -var="environment=${{ matrix.environment }}" -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate"  -out=tfplan-${{ matrix.environment }}-${{ matrix.region }} -var="resource_group_name=rg-net-${{ matrix.environment }}-${{ matrix.region }}-001"
+        run: terraform plan -var="location=${{ matrix.region }}" -var="environment=${{ matrix.environment }}" -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001"
