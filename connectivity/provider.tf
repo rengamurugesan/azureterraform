@@ -12,16 +12,21 @@ terraform {
 
   backend "azurerm" {
     use_azuread_auth = true
+
   }
 }
 
 
-provider "azurerm" {
-  alias = "connectivity"
-  features {}
-  subscription_id = local.connectivity_subscription
-}
+# provider "azurerm" {
+#   alias = "connectivity"
+#   features {}
+#   subscription_id = var.subscription_id
+# }
 
+provider "azurerm" {
+  features {}
+
+}
 
 
 # provider "azurerm" {
