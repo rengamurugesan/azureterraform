@@ -12,7 +12,6 @@ terraform {
 
   backend "azurerm" {
     use_azuread_auth = true
-
   }
 }
 
@@ -23,11 +22,11 @@ provider "azurerm" {
   subscription_id = local.connectivity_subscription
 }
 
-provider "azurerm" {
-  alias = "management"
-  features {}
-  subscription_id = local.management_subscription
-}
+# provider "azurerm" {
+#   alias = "management"
+#   features {}
+#   subscription_id = local.management_subscription
+# }
 # backend "azurerm" {
 #     resource_group_name  = "your-resource-group-name"
 #     storage_account_name = "your-storage-account-name"
