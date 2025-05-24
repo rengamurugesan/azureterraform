@@ -66,6 +66,15 @@ jobs:
           terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
           terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
 
+      - name: Check State Lock
+        run: terraform state list || echo "State file locked!"
+
+      - name: Force Unlock Terraform State
+        run: |
+          LOCK_ID=$(terraform force-unlock 2>&1 | grep -oE '[0-9a-fA-F-]{36}')
+          echo "Lock ID: $LOCK_ID"
+          terraform force-unlock $LOCK_ID
+
       - name: Terraform Plan
         working-directory: ./connectivity
         run: terraform plan -var="location=${{ matrix.region }}" -var="environment=${{ matrix.environment }}" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }} -var="resource_group_name=rg-net-${{ matrix.environment }}-${{ matrix.region }}-001"
