@@ -39,4 +39,4 @@ jobs:
 
       - name: Create Blob Container
         run: |
-          az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name sttf${{ matrix.environment }}-${{ matrix.region }}001
+          az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name sttf${{ matrix.environment }}${{ matrix.region }}001 #--auth-mode login
