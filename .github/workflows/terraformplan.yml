@@ -9,10 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         region: [eastus, westus]
+        environment: [development, qa, production]
     environment:
-      development
+      ${{ matrix.environment }} #development
       # include:
       #   - environment: qa
       #     tenant_id: AZURE_TENANT_ID
