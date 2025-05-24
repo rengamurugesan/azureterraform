@@ -25,6 +25,7 @@ terraform {
 
 provider "azurerm" {
   features {}
+  subscription_id = local.connectivity_subscription
 
 }
 
