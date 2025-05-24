@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         region: [eastus, westus]
-        environment: [development, qa, production]
+        environment: [development, qa]
     environment:
       ${{ matrix.environment }} #development
       # include:
@@ -58,7 +58,8 @@ jobs:
         run: terraform init
 
       - name: Select Workspace
-        run: terraform workspace select ${{ matrix.environment }}-${{ matrix.region }} || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
+        run: |
+          terraform workspace select ${{ matrix.environment }}-${{ matrix.region }} -or-create
 
       - name: Terraform Plan
         run: terraform plan -var="location=${{ matrix.region }}" -var="environment=${{ matrix.environment }}" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
