@@ -69,5 +69,5 @@ jobs:
         working-directory: ./connectivity
         run: |
           ls -a
-          cat ./connectivity/provider.tf
+          cat provider.tf
           terraform plan  -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
