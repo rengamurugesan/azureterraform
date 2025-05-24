@@ -19,13 +19,10 @@ terraform {
 provider "azurerm" {
   alias = "connectivity"
   features {}
-  subscription_id = var.subscription_id
+  subscription_id = local.connectivity_subscription
 }
 
-variable "subscription_id" {
-  description = "Azure Subscription ID"
-  type        = string
-}
+
 
 # provider "azurerm" {
 #   alias = "management"
