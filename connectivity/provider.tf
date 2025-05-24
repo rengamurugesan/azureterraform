@@ -11,10 +11,7 @@ terraform {
   }
 
   backend "azurerm" {
-    container_name       = "test"
-    key                  = "terraform.tfstate"
-    storage_account_name = "denycheckst"
-    resource_group_name  = "denycheckrg"
+    use_azuread_auth = true
 
   }
 }

@@ -43,7 +43,7 @@ jobs:
         working-directory: ./connectivity
 
       - name: Initialize Terraform
-        run: terraform init -reconfigure -backend-config="storage_account_name=$(StorageAccountName)" -backend-config="resource_group_name=$(azureResourceGroup)" -backend-config="container_name=$(ContainerName)" -backend-config="key=$(key)" -backend-config="access_key=$(backendstoragekey)"
+        run: terraform init -reconfigure -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=$(key)" -backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
       - name: Select Workspace
