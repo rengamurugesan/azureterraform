@@ -41,6 +41,6 @@ jobs:
         run: |
           az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name sttf${{ matrix.environment }}${{ matrix.region }}001 #--auth-mode login
 
-      - name: Assign Storage Blob Data Contributor Role
-        run: |
-          az role assignment create --assignee  ${{ secrets.AZURE_CLIENT_ID }} --role "Storage Blob Data Contributor" --scope /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001/providers/Microsoft.Storage/storageAccounts/sttf${{ matrix.environment }}${{ matrix.region }}001
+      # - name: Assign Storage Blob Data Contributor Role
+      #   run: |
+      #     az role assignment create --assignee  ${{ secrets.AZURE_CLIENT_ID }} --role "Storage Blob Data Contributor" --scope /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001/providers/Microsoft.Storage/storageAccounts/sttf${{ matrix.environment }}${{ matrix.region }}001
