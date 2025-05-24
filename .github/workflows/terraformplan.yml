@@ -62,7 +62,9 @@ jobs:
         working-directory: ./connectivity
         run: |
           echo ${{ matrix.environment }}-${{ matrix.region }}
-          terraform workspace select ${{ matrix.environment }}-${{ matrix.region }} -or-create
+          #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
+          terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
+          terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Terraform Plan
         working-directory: ./connectivity
