@@ -68,4 +68,4 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./connectivity
-        run: terraform plan -var="location=${{ matrix.region }}" -var="environment=${{ matrix.environment }}" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
+        run: terraform plan -var="location=${{ matrix.region }}" -var="environment=${{ matrix.environment }}" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }} -var="resource_group_name=rg-net-${{ matrix.environment }}-${{ matrix.region }}-001
