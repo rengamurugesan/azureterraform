@@ -13,19 +13,7 @@ jobs:
       matrix:
         region: [eastus, westus]
         environment: [development, qa]
-    environment:
-      ${{ matrix.environment }} #development
-      # include:
-      #   - environment: qa
-      #     tenant_id: AZURE_TENANT_ID
-      #     client_id_secret: AZURE_CLIENT_SECRET
-      #     client_id: AZURE_CLIENT_ID
-      #     subscription_id: AZURE_SUBSCRIPTION_ID
-      #   - environment: development
-      #     tenant_id: AZURE_TENANT_ID
-      #     client_id_secret: AZURE_CLIENT_SECRET
-      #     client_id: AZURE_CLIENT_ID
-      #     subscription_id: AZURE_SUBSCRIPTION_ID
+    environment: ${{ matrix.environment }} #development
 
     steps:
       - name: Checkout Repository
@@ -55,7 +43,7 @@ jobs:
         working-directory: ./connectivity
 
       - name: Initialize Terraform
-        run: terraform init
+        run: terraform init -reconfigure -backend-config="storage_account_name=$(StorageAccountName)" -backend-config="resource_group_name=$(azureResourceGroup)" -backend-config="container_name=$(ContainerName)" -backend-config="key=$(key)" -backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
       - name: Select Workspace

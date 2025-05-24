@@ -1,0 +1,38 @@
+name: Create Azure Storage Account - Backed
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [eastus, westus]
+        environment: [development, qa]
+    environment: ${{ matrix.environment }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: login
+        run: |
+          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
+          az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - uses: azure/login@v2
+        with:
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+
+      - name: Create Storage Account
+        run: |
+          az storage account create --name sttf${{ matrix.environment }}-${{ matrix.region }}001 --resource-group rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
+
+      - name: Create Blob Container
+        run: |
+          az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name sttf${{ matrix.environment }}-${{ matrix.region }}001
