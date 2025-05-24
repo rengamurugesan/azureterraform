@@ -56,10 +56,14 @@ jobs:
 
       - name: Initialize Terraform
         run: terraform init
+        working-directory: ./connectivity
 
       - name: Select Workspace
+        working-directory: ./connectivity
         run: |
+          echo ${{ matrix.environment }}-${{ matrix.region }}
           terraform workspace select ${{ matrix.environment }}-${{ matrix.region }} -or-create
 
       - name: Terraform Plan
+        working-directory: ./connectivity
         run: terraform plan -var="location=${{ matrix.region }}" -var="environment=${{ matrix.environment }}" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
