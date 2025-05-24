@@ -1,0 +1,64 @@
+name: Unlock Terraform State
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [eastus, westus]
+        environment: [development, qa]
+    environment: ${{ matrix.environment }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: login
+        run: |
+          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
+          az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - uses: azure/login@v2
+        with:
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: terraform fmt
+        run: terraform fmt -check
+        working-directory: ./connectivity
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./connectivity
+
+      # - name: Select Workspace
+      #   working-directory: ./connectivity
+      #   run: |
+      #     echo ${{ matrix.environment }}-${{ matrix.region }}
+      #     #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
+      #     terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
+      #     terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
+
+      - name: Check State Lock
+        run: terraform state list || echo "State file locked!"
+
+      - name: Force Unlock Terraform State
+        run: |
+          LOCK_ID=$(terraform force-unlock 2>&1 | grep -oE '[0-9a-fA-F-]{36}')
+          echo "Lock ID: $LOCK_ID"
+          terraform force-unlock $LOCK_ID
