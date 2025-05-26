@@ -13,7 +13,7 @@ jobs:
       matrix:
         region: [eastus, westus]
         environment: [development, qa]
-    environment: ${{ matrix.environment }} #development
+    environment: ${{ matrix.environment }}
 
     steps:
       - name: Checkout Repository
@@ -43,9 +43,7 @@ jobs:
         working-directory: ./connectivity
 
       - name: Initialize Terraform
-        run:
-          terraform init -reconfigure  -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
-          #terraform init -reconfigure -backend-config="storage_account_name=$(StorageAccountName)"                                 -backend-config="resource_group_name=$(azureResourceGroup)"                                           -backend-config="container_name=$(ContainerName)"                                       -backend-config="key=$(key)" -backend-config="access_key=$(backendstoragekey)"
+        run: terraform init -reconfigure  -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
       - name: Select Workspace
@@ -56,16 +54,16 @@ jobs:
           terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
           terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
 
-      # - name: Check State Lock
-      #   run: terraform state list || echo "State file locked!"
-
-      # - name: Force Unlock Terraform State
-      #   run: |
-      #     LOCK_ID=$(terraform force-unlock 2>&1 | grep -oE '[0-9a-fA-F-]{36}')
-      #     echo "Lock ID: $LOCK_ID"
-      #     terraform force-unlock $LOCK_ID
-
       - name: Terraform Plan
         working-directory: ./connectivity
         run: |
           terraform plan  -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
+
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
+          path: ./connectivity
+          retention-days: 1
+          if-no-files-found: warn
+          include-hidden-files: true
