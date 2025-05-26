@@ -64,10 +64,11 @@ jobs:
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
           path: ./**
-          retention-days: 1
+          retention-days: 2
           if-no-files-found: warn
           include-hidden-files: true
 
       - uses: actions/download-artifact@v4
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
+          run-id: ${{ github.event.workflow_run.id }}
