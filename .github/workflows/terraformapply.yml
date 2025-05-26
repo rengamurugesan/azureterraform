@@ -38,7 +38,6 @@ jobs:
         name: Download Terraform Plan Artifact
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
-          path: ./connectivity
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Azure CLI script
