@@ -1,12 +1,12 @@
-name: Terraform Paired-Region & Multi-Environment Apply
-on: [workflow_dispatch]
-# on:
-#   push:
-#     branches:
-#       - master
+name: Terraform Deploy
+on:
+  workflow_run:
+    workflows: ["Terraform Build"]
+    types:
+      - completed
 
 jobs:
-  build:
+  terraform-build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

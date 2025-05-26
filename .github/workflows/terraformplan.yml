@@ -1,4 +1,4 @@
-name: Terraform Paired-Region & Multi-Environment Plan (Azure)
+name: Terraform Build
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  terraform-build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
