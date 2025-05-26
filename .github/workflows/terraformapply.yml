@@ -37,7 +37,7 @@ jobs:
       - uses: actions/download-artifact@v4
         name: Download Terraform Plan Artifact
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
           path: ./connectivity
           run-id: ${{ github.event.workflow_run.id }}
 
