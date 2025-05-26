@@ -59,11 +59,14 @@ jobs:
         run: |
           terraform plan  -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
 
+      - name: Compress Artifact
+        run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./**
+
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
-          path: ./**
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
+          path: ./
           retention-days: 2
           if-no-files-found: warn
           include-hidden-files: true
@@ -72,3 +75,5 @@ jobs:
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
           run-id: ${{ github.event.workflow_run.id }}
+          path: ./output
+          retry-count: 10
