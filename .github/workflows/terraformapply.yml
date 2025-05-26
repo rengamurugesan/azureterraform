@@ -35,11 +35,17 @@ jobs:
       - run: |
           echo ${{ github.event.workflow_run.id }}
 
-      - uses: actions/download-artifact@v4
-        name: Download Terraform Plan Artifact
+      # - uses: actions/download-artifact@v4
+      #   name: Download Terraform Plan Artifact
+      #   with:
+      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
+      #     run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
-          run-id: ${{ github.event.workflow_run.id }}
+          workflow: ${{ github.event.workflow_run.id }}
+          workflow_conclusion: success
 
       - name: Azure CLI script
         uses: azure/cli@v2
