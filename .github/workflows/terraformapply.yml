@@ -32,8 +32,11 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - uses: actions/download-artifact@v4
+        name: Download Terraform Plan Artifact
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
+          run-id: ${{ github.event.workflow_run.id }}
+          path: ./output
 
       - name: Azure CLI script
         uses: azure/cli@v2
