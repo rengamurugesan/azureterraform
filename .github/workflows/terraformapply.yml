@@ -39,7 +39,6 @@ jobs:
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
           run-id: ${{ github.event.workflow_run.id }}
-          path: ./output
 
       - name: Azure CLI script
         uses: azure/cli@v2
