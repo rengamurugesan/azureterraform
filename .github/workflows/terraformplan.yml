@@ -77,5 +77,6 @@ jobs:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
           run-id: ${{ github.event.workflow_run.id }}
 
-      - run: |
-          echo ${{ github.event.workflow_run.id }}
+      - name: Show Workflow Run ID
+        run: |
+          echo "Workflow Run ID: ${{ github.run_id }}"
