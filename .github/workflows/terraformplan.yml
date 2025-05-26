@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
-          path: ./connectivity
+          path: ./**
           retention-days: 1
           if-no-files-found: warn
           include-hidden-files: true
