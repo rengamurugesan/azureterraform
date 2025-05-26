@@ -74,7 +74,7 @@ jobs:
       - name: Terraform apply
         working-directory: ./connectivity
         run: |
-          terraform apply -input=false -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }} -auto-approve
+          terraform apply -input=false -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001"  -auto-approve
 
       # - name: Upload Terraform Plan Artifact
       #   uses: actions/upload-artifact@v4
