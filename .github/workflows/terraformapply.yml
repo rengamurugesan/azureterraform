@@ -31,14 +31,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Select Workspace
-        working-directory: ./connectivity
-        run: |
-          echo ${{ matrix.environment }}-${{ matrix.region }}
-          #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
-          terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
-          terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
-
       - uses: actions/download-artifact@v4
         with:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
@@ -58,13 +50,13 @@ jobs:
         run: terraform init -reconfigure  -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
-      # - name: Select Workspace
-      #   working-directory: ./connectivity
-      #   run: |
-      #     echo ${{ matrix.environment }}-${{ matrix.region }}
-      #     #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
-      #     terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
-      #     terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
+      - name: Select Workspace
+        working-directory: ./connectivity
+        run: |
+          echo ${{ matrix.environment }}-${{ matrix.region }}
+          #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
+          terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
+          terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Terraform Plan
         working-directory: ./connectivity
