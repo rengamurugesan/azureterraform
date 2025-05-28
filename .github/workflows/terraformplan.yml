@@ -1,10 +1,10 @@
 name: Terraform Build
 
 on:
-  push:
-    branches:
-      - master
-
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:
 jobs:
   terraform-build:
     runs-on: ubuntu-latest
