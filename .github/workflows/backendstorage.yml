@@ -43,7 +43,8 @@ jobs:
 
       - name: Create Storage Account for Backend Storage
         run: |
-          az storage account create --name sttf(substr(${{ matrix.environment }},1,4))${{ matrix.region }}001 --resource-group rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
+          echo substr(${{ matrix.environment }},1,4)
+          az storage account create --name sttf${{ matrix.environment }}${{ matrix.region }}001 --resource-group rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
 
       - name: Create Blob Container for Backend Storage
         run: |
