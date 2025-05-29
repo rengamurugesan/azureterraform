@@ -39,7 +39,7 @@ jobs:
 
       - run: |
           echo "Region: ${{ matrix.region }}"
-          echo "Environment: substr(${{ matrix.environment }},1,4)"
+          echo "Environment: ${{ substr(${{ matrix.environment }},1,4) }}"
 
       - name: Create Resource Group for Backend Storage
         run: |
