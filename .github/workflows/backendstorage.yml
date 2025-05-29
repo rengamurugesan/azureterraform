@@ -2,9 +2,9 @@ name: Create Azure Storage Account for Backend Terraform State
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   build:
