@@ -37,9 +37,21 @@ jobs:
       #   with:
       #     creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
 
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: env
+        with:
+          value: "${{ matrix.environment }}"
+          length_from_start: 4
+
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: region
+        with:
+          value: "${{ matrix.region }}"
+          length_from_start: 6
+
+          #steps.two.outputs.substring
       - run: |
-          echo "Region: ${{ matrix.region }}"
-          echo "Environment: ${{ substr(${{ matrix.environment }},1,4) }}"
+          echo ${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}
 
       - name: Create Resource Group for Backend Storage
         run: |
@@ -47,7 +59,7 @@ jobs:
 
       - name: Create Storage Account for Backend Storage
         run: |
-          echo substr(${{ matrix.environment }},1,4)
+
           az storage account create --name sttf${{ matrix.environment }}${{ matrix.region }}001 --resource-group rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
 
       - name: Create Blob Container for Backend Storage
