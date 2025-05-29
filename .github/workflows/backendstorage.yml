@@ -64,7 +64,7 @@ jobs:
 
       - name: Create Blob Container for Backend Storage
         run: |
-          az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name stt${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001 #--auth-mode login
+          az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001 #--auth-mode login
 
       # - name: Assign Storage Blob Data Contributor Role
       #   run: |
