@@ -60,11 +60,11 @@ jobs:
       - name: Create Storage Account for Backend Storage
         run: |
 
-          az storage account create --name sttf${{ matrix.environment }}${{ matrix.region }}001 --resource-group rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
+          az storage account create --name sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001 --resource-group rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
 
       - name: Create Blob Container for Backend Storage
         run: |
-          az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name sttf${{ matrix.environment }}${{ matrix.region }}001 #--auth-mode login
+          az storage container create --name tfstate-${{ matrix.environment }}-${{ matrix.region }} --account-name stt${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001 #--auth-mode login
 
       # - name: Assign Storage Blob Data Contributor Role
       #   run: |
