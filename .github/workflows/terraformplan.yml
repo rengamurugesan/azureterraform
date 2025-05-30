@@ -88,13 +88,26 @@ jobs:
       - name: Show Workflow Run ID
         run: |
           echo "Workflow Run ID: ${{ github.run_id }}"
+
   WaitForApproval:
     runs-on: ubuntu-latest
     needs: terraform-build
     if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     steps:
-      - name: Wait for Approval
-        uses: hmarr/auto-approve-action@v2
+      - name: Await for manual approval
+        uses: trstringer/manual-approval@v1
         with:
-          timeout-minutes: 60
-          message: "Please review the Terraform plan before proceeding with the apply step."
+          # secret: ${{ github.TOKEN }}
+          approvers: rengamurugesan@hotmail.com
+          minimum-approvals: 1 #specify the number of approvals needed
+          issue-title: "Manual Approval Required for Terraform Apply"
+          issue-body: "Please approve or deny the deployment."
+
+      - name: Notify Approval Status
+        run: |
+          if [ "${{ steps.approval.outputs.approved }}" == "true" ]; then
+            echo "Deployment approved."
+          else
+            echo "Deployment denied."
+            exit 1
+          fi
