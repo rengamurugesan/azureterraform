@@ -82,7 +82,7 @@ jobs:
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
           path: ./connectivity
           retention-days: 2
           if-no-files-found: warn
@@ -144,7 +144,7 @@ jobs:
       - name: Download Terraform Plan Artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
 
       - name: Show Terraform Plan
         # working-directory: ./connectivity
