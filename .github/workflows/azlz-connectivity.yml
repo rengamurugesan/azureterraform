@@ -85,8 +85,9 @@ jobs:
           cat tfplan-${{ matrix.environment }}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
         continue-on-error: true
 
-      - name: Create Connectivity Directory
-        run: rm -rf ./connectivity/.terraform
+      - name: Remove plugins from Terraform Directory
+        run: |
+          rm -rf ./connectivity/.terraform
 
       - name: Compress Artifact
         run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
