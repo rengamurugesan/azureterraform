@@ -158,6 +158,12 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
+      - name: Terraform Apply
+        id: terraform-apply
+        #working-directory: ./connectivity
+        run: |
+          terraform apply -input=false tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan -auto-approve
+
       # - uses: bhowell2/github-substring-action@1.0.2
       #   id: envsubstr
       #   with:
