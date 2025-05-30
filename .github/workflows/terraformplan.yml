@@ -162,7 +162,7 @@ jobs:
         id: terraform-apply
         #working-directory: ./connectivity
         run: |
-          terraform apply tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan -auto-approve
+          terraform apply tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
 
       # - uses: bhowell2/github-substring-action@1.0.2
       #   id: envsubstr
