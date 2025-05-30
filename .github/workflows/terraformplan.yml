@@ -1,9 +1,6 @@
 name: Terraform Build
 
 on:
-  # push:
-  #   branches:
-  #     - master
   workflow_dispatch:
 jobs:
   terraform-build:
@@ -11,22 +8,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: [eastus, westus]
-        environment: [development, qa]
+        region: [eastus2, centralus]
+        environment: [connectivity, management]
     environment: ${{ matrix.environment }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: login
-        run: |
-          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
-          az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-
-      - uses: azure/login@v2
+      - name: Login to Azure using OIDC
+        uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      # - name: login
+      #   run: |
+      #     echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
+      #     az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      # - uses: azure/login@v2
+      #   with:
+      #     creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
 
       - name: Azure CLI script
         uses: azure/cli@v2
@@ -34,6 +38,18 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
+
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: env
+        with:
+          value: "${{ matrix.environment }}"
+          length_from_start: 4
+
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: region
+        with:
+          value: "${{ matrix.region }}"
+          length_from_start: 6
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -43,7 +59,7 @@ jobs:
         working-directory: ./connectivity
 
       - name: Initialize Terraform
-        run: terraform init -reconfigure  -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
+        run: terraform init -reconfigure  -backend-config="storage_account_name=sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
       - name: Select Workspace
