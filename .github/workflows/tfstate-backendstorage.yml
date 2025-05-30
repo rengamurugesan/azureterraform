@@ -1,4 +1,4 @@
-name: Create Azure Storage Account for Terraform State file management
+name: Azure Storage Account for Terraform State file management
 
 on:
   workflow_dispatch:
