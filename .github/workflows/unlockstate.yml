@@ -46,14 +46,6 @@ jobs:
         run: terraform init
         working-directory: ./connectivity
 
-      # - name: Select Workspace
-      #   working-directory: ./connectivity
-      #   run: |
-      #     echo ${{ matrix.environment }}-${{ matrix.region }}
-      #     #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
-      #     terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
-      #     terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
-
       - name: Check State Lock
         run: terraform state list || echo "State file locked!"
 

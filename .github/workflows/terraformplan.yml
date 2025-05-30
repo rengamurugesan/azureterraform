@@ -57,14 +57,6 @@ jobs:
         run: terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
-      # - name: Select Workspace
-      #   working-directory: ./connectivity
-      #   run: |
-      #     echo ${{ matrix.environment }}-${{ matrix.region }}
-      #     #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
-      #     terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
-      #     terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
-
       - name: Terraform Validate
         id: terraform-validate
         run: terraform validate -no-color
@@ -73,10 +65,6 @@ jobs:
       - name: Terraform Plan
         working-directory: ./connectivity
         run: |
-
-          ls -a
-          cat connectivity-${{ matrix.region }}.tfvars
-          cat provider.tf
           terraform plan -var="connectivity_subscription=${{ vars.CONNECTIVITY_SUBSCRIPTION }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Compress Artifact
@@ -85,7 +73,7 @@ jobs:
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
           path: ./*.zip
           retention-days: 2
           if-no-files-found: warn
@@ -94,7 +82,7 @@ jobs:
       - uses: actions/download-artifact@v4
         name: Download Terraform Plan Artifact
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}${{ github.event.workflow_run.id }}.zip
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Show Workflow Run ID
