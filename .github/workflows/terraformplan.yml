@@ -86,7 +86,7 @@ jobs:
       - name: Terraform Plan
         working-directory: ./connectivity
         run: |
-          terraform plan -var="subscription_id="${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
+          terraform plan -var="subscription_id="${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Compress Artifact
         run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
