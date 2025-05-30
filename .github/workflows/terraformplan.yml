@@ -70,13 +70,13 @@ jobs:
         run: terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
-      - name: Select Workspace
-        working-directory: ./connectivity
-        run: |
-          echo ${{ matrix.environment }}-${{ matrix.region }}
-          #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
-          terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
-          terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
+      # - name: Select Workspace
+      #   working-directory: ./connectivity
+      #   run: |
+      #     echo ${{ matrix.environment }}-${{ matrix.region }}
+      #     #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
+      #     terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
+      #     terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Terraform Validate
         id: terraform-validate
@@ -86,7 +86,7 @@ jobs:
       - name: Terraform Plan
         working-directory: ./connectivity
         run: |
-          terraform plan  -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
+          terraform plan -var="subscription_id="${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Compress Artifact
         run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
