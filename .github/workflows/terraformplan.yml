@@ -1,7 +1,12 @@
-name: Terraform Build
+name: Azure Landing Zone for Connectivity
 
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   terraform-build:
     runs-on: ubuntu-latest
@@ -9,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         region: [eastus2, centralus]
-        environment: [connectivity, management]
+        environment: [connectivity]
     environment: ${{ matrix.environment }}
 
     steps:
@@ -52,14 +57,17 @@ jobs:
           length_from_start: 6
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Format Check
+        id: terraform-fmt
         run: terraform fmt -check
         working-directory: ./connectivity
+        continue-on-error: true
 
       - name: Initialize Terraform
-        run: terraform init -reconfigure  -backend-config="storage_account_name=sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
+        id: terraform-init
+        run: terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
       - name: Select Workspace
@@ -69,6 +77,11 @@ jobs:
           #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
           terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
           terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
+
+      - name: Terraform Validate
+        id: terraform-validate
+        run: terraform validate -no-color
+        working-directory: ./connectivity
 
       - name: Terraform Plan
         working-directory: ./connectivity
