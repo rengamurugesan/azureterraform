@@ -145,7 +145,6 @@ jobs:
 
       - run: |
           ls -a
-        working-directory: ./connectivity
         name: List Files in Connectivity Directory
 
       # - name: Initialize Terraform
