@@ -3,6 +3,6 @@ tags = {
   Environment = "Connectivity"
   Project     = "hub"
   Owner       = "Network Team"
-  region
+  region      = "East US 2"
 
 }
