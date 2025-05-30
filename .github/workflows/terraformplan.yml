@@ -67,26 +67,26 @@ jobs:
         run: |
           terraform plan -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
 
-      # - name: Compress Artifact
-      #   run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
-
-      # - name: Upload Terraform Plan Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
-      #     path: ./*.zip
-      #     retention-days: 2
-      #     if-no-files-found: warn
-      #     include-hidden-files: true
+      - name: Compress Artifact
+        run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
 
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
-          path: ./connectivity/tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
+          path: ./*.zip
           retention-days: 2
           if-no-files-found: warn
           include-hidden-files: true
+
+      # - name: Upload Terraform Plan Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+      #     path: ./connectivity/tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+      #     retention-days: 2
+      #     if-no-files-found: warn
+      #     include-hidden-files: true
 
       # - uses: actions/download-artifact@v4
       #   name: Download Terraform Plan Artifact
@@ -149,7 +149,7 @@ jobs:
       - name: Download Terraform Plan Artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
@@ -158,28 +158,19 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
+      - run: |
+          ls -a
+        name: List Files in Connectivity Directory
+
+      - name: extract tfplan
+        run: unzip -o tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip -d ./connectivity
+
+      - name: Initialize Terraform
+        id: terraform-init
+        run: terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate"
+        working-directory: ./connectivity
+
       - name: Terraform Apply
-        id: terraform-apply
-        #working-directory: ./connectivity
+        working-directory: ./connectivity
         run: |
-          terraform apply tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
-
-      # - uses: bhowell2/github-substring-action@1.0.2
-      #   id: envsubstr
-      #   with:
-      #     value: "${{ matrix.environment }}"
-      #     length_from_start: 4
-
-      # - run: |
-      #     ls -a
-      #   name: List Files in Connectivity Directory
-
-      # - name: Initialize Terraform
-      #   id: terraform-init
-      #   run: terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate"
-      #   working-directory: ./connectivity
-
-      # - name: Terraform Apply
-      #   working-directory: ./connectivity
-      #   run: |
-      #     terraform apply -input=false -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars  -auto-approve
+          terraform apply -input=false -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars  -auto-approve
