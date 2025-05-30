@@ -88,3 +88,13 @@ jobs:
       - name: Show Workflow Run ID
         run: |
           echo "Workflow Run ID: ${{ github.run_id }}"
+  WaitForApproval:
+    runs-on: ubuntu-latest
+    needs: terraform-build
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
+    steps:
+      - name: Wait for Approval
+        uses: hmarr/auto-approve-action@v2
+        with:
+          timeout-minutes: 60
+          message: "Please review the Terraform plan before proceeding with the apply step."

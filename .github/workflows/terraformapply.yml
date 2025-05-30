@@ -12,34 +12,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: [eastus, westus]
-        environment: [development, qa]
+        region: [eastus2, centralus]
+        environment: [connectivity]
     environment: ${{ matrix.environment }}
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: login
-        run: |
-          echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
-          az login --service-principal --username ${{ secrets.AZURE_CLIENT_ID }} --password ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-
-      - uses: azure/login@v2
-        with:
-          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
       - run: |
           echo ${{ github.event.workflow_run.id }}
 
-      # - uses: actions/download-artifact@v4
-      #   name: Download Terraform Plan Artifact
-      #   with:
-      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
-      #     run-id: ${{ github.event.workflow_run.id }}
+      - uses: actions/download-artifact@v4
+        name: Download Terraform Plan Artifact
+        with:
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.event.workflow_run.id }}.zip
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
@@ -48,39 +36,12 @@ jobs:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip
           workflow_conclusion: success
 
-      - name: Azure CLI script
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
-
-      - name: Terraform Format Check
-        run: terraform fmt -check
-        working-directory: ./connectivity
-
       - name: Initialize Terraform
-        run: terraform init -reconfigure  -backend-config="storage_account_name=sttf${{ matrix.environment }}${{ matrix.region }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
+        id: terraform-init
+        run: terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
-
-      - name: Select Workspace
-        working-directory: ./connectivity
-        run: |
-          echo ${{ matrix.environment }}-${{ matrix.region }}
-          #terraform workspace select ${{ Env.environment }}-${{ matrix.region }} -or-create
-          terraform workspace list | grep "${{ matrix.environment }}-${{ matrix.region }}" || terraform workspace new ${{ matrix.environment }}-${{ matrix.region }}
-          terraform workspace select ${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Terraform apply
         working-directory: ./connectivity
         run: |
-          terraform apply -input=false -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001"  -auto-approve
-
-      # - name: Upload Terraform Plan Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}
-      #     path: ./**
-      #     retention-days: 1
-      #     if-no-files-found: warn
-      #     include-hidden-files: true
+          terraform apply -input=false -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars  -auto-approve
