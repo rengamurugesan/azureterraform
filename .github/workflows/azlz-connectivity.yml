@@ -11,7 +11,8 @@ permissions:
   id-token: write
 
 jobs:
-  terraform-build:
+  terraform-plan:
+    name: Terraform Plan for Connectivity
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -102,8 +103,9 @@ jobs:
           include-hidden-files: true
 
   terraform-apply:
+    name: Terraform Apply for Connectivity
     runs-on: ubuntu-latest
-    needs: terraform-build
+    needs: terraform-plan
     strategy:
       fail-fast: false
       matrix:
