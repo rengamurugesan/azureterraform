@@ -74,7 +74,7 @@ jobs:
         working-directory: ./connectivity
         env:
           SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-          connectivity_subscription: ${{ env.SUBSCRIPTION_ID }}
+          connectivity_subscription: ${{ vars.SUBSCRIPTION_ID }}
         run: |
           echo "subscription_id=${{ secrets.SUBSCRIPTION_ID }}"
           echo "connectivity_subscription=${{ env.connectivity_subscription }}" 
