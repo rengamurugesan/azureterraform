@@ -77,9 +77,9 @@ jobs:
           connectivity_subscription: ${{ env.SUBSCRIPTION_ID }}
         run: |
           echo "subscription_id=${{ secrets.SUBSCRIPTION_ID }}"
-          echo "connectivity_subscription=${{ env.SUBSCRIPTION_ID }}" 
+          echo "connectivity_subscription=${{ env.connectivity_subscription }}" 
 
-          terraform plan -var="connectivity_subscription="${{ env.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
+          terraform plan -var="connectivity_subscription="${{ env.connectivity_subscription }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Compress Artifact
         run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
