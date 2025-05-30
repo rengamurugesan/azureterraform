@@ -65,7 +65,12 @@ jobs:
       - name: Terraform Plan
         working-directory: ./connectivity
         run: |
-          terraform plan -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+          terraform plan \
+          -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
+          -var="location=${{ matrix.region }}" \
+          -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" \
+          -var-file=connectivity-${{ matrix.region }}.tfvars  \
+          -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan \
 
       - name: Show Terraform Plan
         working-directory: ./connectivity
