@@ -65,29 +65,38 @@ jobs:
       - name: Terraform Plan
         working-directory: ./connectivity
         run: |
-          terraform plan -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
+          terraform plan -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
 
       - name: Compress Artifact
         run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
 
+      # - name: Upload Terraform Plan Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
+      #     path: ./*.zip
+      #     retention-days: 2
+      #     if-no-files-found: warn
+      #     include-hidden-files: true
+
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
-          path: ./*.zip
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
+          path: ./*.tfplan
           retention-days: 2
           if-no-files-found: warn
           include-hidden-files: true
 
-      - uses: actions/download-artifact@v4
-        name: Download Terraform Plan Artifact
-        with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
-          run-id: ${{ github.event.workflow_run.id }}
+      # - uses: actions/download-artifact@v4
+      #   name: Download Terraform Plan Artifact
+      #   with:
+      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
+      #     run-id: ${{ github.event.workflow_run.id }}
 
-      - name: Show Workflow Run ID
-        run: |
-          echo "Workflow Run ID: ${{ github.run_id }}"
+      # - name: Show Workflow Run ID
+      #   run: |
+      #     echo "Workflow Run ID: ${{ github.run_id }}"
 
   # WaitForApproval:
   #   runs-on: ubuntu-latest
@@ -125,10 +134,22 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: envsubstr
+        with:
+          value: "${{ matrix.environment }}"
+          length_from_start: 4
+
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: regionsubstr
+        with:
+          value: "${{ matrix.region }}"
+          length_from_start: 6
+
       - name: Download Terraform Plan Artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
+          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
@@ -137,15 +158,15 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
-      - uses: bhowell2/github-substring-action@1.0.2
-        id: envsubstr
-        with:
-          value: "${{ matrix.environment }}"
-          length_from_start: 4
+      # - uses: bhowell2/github-substring-action@1.0.2
+      #   id: envsubstr
+      #   with:
+      #     value: "${{ matrix.environment }}"
+      #     length_from_start: 4
 
-      - run: |
-          ls -a
-        name: List Files in Connectivity Directory
+      # - run: |
+      #     ls -a
+      #   name: List Files in Connectivity Directory
 
       # - name: Initialize Terraform
       #   id: terraform-init
