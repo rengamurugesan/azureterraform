@@ -69,7 +69,10 @@ jobs:
 
       - name: Show Terraform Plan
         working-directory: ./connectivity
-        run: terraform show -json tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
+        run: |
+          terraform show -json tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
+          cat tfplan-${{ matrix.environment }}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
+        continue-on-error: true
 
       - name: Create Connectivity Directory
         run: rm -rf ./connectivity/.terraform
@@ -86,47 +89,6 @@ jobs:
           if-no-files-found: warn
           include-hidden-files: true
 
-      # - name: Upload Terraform Plan Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
-      #     path: ./connectivity/tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
-      #     retention-days: 2
-      #     if-no-files-found: warn
-      #     include-hidden-files: true
-
-      # - uses: actions/download-artifact@v4
-      #   name: Download Terraform Plan Artifact
-      #   with:
-      #     name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
-      #     run-id: ${{ github.event.workflow_run.id }}
-
-      # - name: Show Workflow Run ID
-      #   run: |
-      #     echo "Workflow Run ID: ${{ github.run_id }}"
-
-  # WaitForApproval:
-  #   runs-on: ubuntu-latest
-  #   needs: terraform-build
-  #   if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
-  #   steps:
-  #     - name: Await for manual approval
-  #       uses: trstringer/manual-approval@v1
-  #       with:
-  #         # secret: ${{ github.TOKEN }}
-  #         approvers: rengamurugesan@hotmail.com
-  #         minimum-approvals: 1 #specify the number of approvals needed
-  #         issue-title: "Manual Approval Required for Terraform Apply"
-  #         issue-body: "Please approve or deny the deployment."
-
-  #     - name: Notify Approval Status
-  #       run: |
-  #         if [ "${{ steps.approval.outputs.approved }}" == "true" ]; then
-  #           echo "Deployment approved."
-  #         else
-  #           echo "Deployment denied."
-  #           exit 1
-  #         fi
   terraform-apply:
     runs-on: ubuntu-latest
     needs: terraform-build
