@@ -75,7 +75,8 @@ jobs:
         run: |
 
           ls -a
-
+          cat connectivity-${{ matrix.region }}.tfvars
+          cat provider.tf
           terraform plan -var="connectivity_subscription=${{ vars.CONNECTIVITY_SUBSCRIPTION }}" -var="location=${{ matrix.region }}" -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" -var-file=connectivity-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}
 
       - name: Compress Artifact
