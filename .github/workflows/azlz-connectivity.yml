@@ -88,12 +88,12 @@ jobs:
           if-no-files-found: warn
           include-hidden-files: true
 
-      # - name: Show Terraform Plan
-      #   working-directory: ./connectivity
-      #   run: |
-      #     terraform show -json tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
-      #     cat tfplan-${{ matrix.environment }}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
-      #   continue-on-error: true
+      - name: Show Terraform Plan
+        working-directory: ./connectivity
+        run: |
+          terraform show -json tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
+          cat tfplan-${{ matrix.environment }}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
+        continue-on-error: true
 
       - name: Remove plugins from Terraform Directory
         run: |
@@ -111,52 +111,10 @@ jobs:
           if-no-files-found: warn
           include-hidden-files: true
 
-  terraform-review:
-    name: Terraform Review for Connectivity
-    runs-on: ubuntu-latest
-    needs: terraform-plan
-    strategy:
-      fail-fast: false
-      matrix:
-        region: [eastus2, centralus]
-        environment: [connectivity]
-    environment: ${{ matrix.environment }}
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - uses: bhowell2/github-substring-action@1.0.2
-        id: envsubstr
-        with:
-          value: "${{ matrix.environment }}"
-          length_from_start: 4
-
-      - uses: bhowell2/github-substring-action@1.0.2
-        id: regionsubstr
-        with:
-          value: "${{ matrix.region }}"
-          length_from_start: 6
-
-      - name: Download Terraform Plan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
-
-      - name: Show Terraform Plan
-        # working-directory: ./connectivity
-        run: |
-          terraform show -json tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
-          cat tfplan-${{ matrix.environment }}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
-        continue-on-error: true
-
   terraform-apply:
     name: Terraform Apply for Connectivity
     runs-on: ubuntu-latest
-    needs: terraform-review
+    needs: terraform-plan
 
     strategy:
       fail-fast: false
