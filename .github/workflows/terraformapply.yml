@@ -38,7 +38,9 @@ jobs:
 
       - name: Initialize Terraform
         id: terraform-init
-        run: terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
+        run: |
+          ls -a
+          terraform init -reconfigure -input=false  -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" -backend-config="key=terraform.tfstate" #-backend-config="access_key=$(backendstoragekey)"
         working-directory: ./connectivity
 
       - name: Terraform apply
