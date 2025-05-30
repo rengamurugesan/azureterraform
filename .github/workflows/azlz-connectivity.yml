@@ -78,15 +78,7 @@ jobs:
           -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" \
           -var-file=connectivity-${{ matrix.region }}.tfvars  \
           -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan \
-
-      - name: Upload Terraform Plan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
-          path: ./connectivity
-          retention-days: 2
-          if-no-files-found: warn
-          include-hidden-files: true
+          -input=false
 
       - name: Show Terraform Plan
         working-directory: ./connectivity
