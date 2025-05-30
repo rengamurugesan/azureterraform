@@ -147,7 +147,7 @@ jobs:
           name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan
 
       - name: Show Terraform Plan
-        working-directory: ./connectivity
+        # working-directory: ./connectivity
         run: |
           terraform show -json tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
           cat tfplan-${{ matrix.environment }}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
