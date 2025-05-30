@@ -27,8 +27,8 @@ terraform {
 
 provider "azurerm" {
   features {}
-  skip_provider_registration = true
-  subscription_id            = local.connectivity_subscription
+
+  subscription_id = local.connectivity_subscription
 
 }
 provider "random" {
