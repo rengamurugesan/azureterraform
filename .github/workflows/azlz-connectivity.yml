@@ -10,6 +10,11 @@ permissions:
   contents: read
   id-token: write
 
+env:
+  client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
 jobs:
   terraform-plan:
     name: Terraform Plan for Connectivity
@@ -27,10 +32,10 @@ jobs:
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+        # with:
+        #   client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        #   tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        #   subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - uses: bhowell2/github-substring-action@1.0.2
         id: envsubstr
@@ -68,6 +73,35 @@ jobs:
         id: terraform-validate
         run: terraform validate -no-color
         working-directory: ./connectivity
+      
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.52.0
+
+      - name: Show version
+        run: tflint --version
+      
+      - name: Init TFLint
+        run: tflint --init
+      
+      - name: Run TFLint
+        run: tflint -f compact
+
+      - name: Lint Terraform code
+        run: tflint --format=json . > tflint.json
+        
+      - name: Check tflint output
+        run: |
+          if [[ ! -s tflint.json ]]; then
+            echo "No tflint output"
+            exit 0
+          fi
+          cat tflint.json
+          if [[ $(cat tflint.json | jq -r 'length') -gt 0 ]]; then
+            echo "Tflint errors found"
+            exit 1
+          fi
 
       - name: Terraform Plan
         working-directory: ./connectivity

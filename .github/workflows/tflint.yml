@@ -3,8 +3,8 @@ name: Terraform Lint
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+  
 
 jobs:
   lint:
@@ -12,10 +12,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install tflint
-        run: go install github.com/terraform-linters/tflint/cmd/tflint@latest
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.52.0
+
+      - name: Show version
+        run: tflint --version
+      
+      - name: Init TFLint
+        run: tflint --init
+      
+      - name: Run TFLint
+        run: tflint -f compact
+
       - name: Lint Terraform code
         run: tflint --format=json . > tflint.json
+        
       - name: Check tflint output
         run: |
           if [[ ! -s tflint.json ]]; then
