@@ -90,9 +90,9 @@ jobs:
         working-directory: ./connectivity
         run: tflint  --minimum-failure-severity warning -f compact
 
-      - name: Lint Terraform code
-        working-directory: ./connectivity
-        run: tflint --format=json . > tflint.json
+      # - name: Lint Terraform code
+      #   working-directory: ./connectivity
+      #   run: tflint --format=json . > tflint.json
         
       - name: Check tflint output
         working-directory: ./connectivity
