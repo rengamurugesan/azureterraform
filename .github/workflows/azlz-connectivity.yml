@@ -94,18 +94,18 @@ jobs:
       #   working-directory: ./connectivity
       #   run: tflint --format=json . > tflint.json
         
-      - name: Check tflint output
-        working-directory: ./connectivity
-        run: |
-          if [[ ! -s tflint.json ]]; then
-            echo "No tflint output"
-            exit 0
-          fi
-          cat tflint.json
-          if [[ $(cat tflint.json | jq -r 'length') -gt 0 ]]; then
-            echo "Tflint errors found"
-            exit 1
-          fi
+      # - name: Check tflint output
+      #   working-directory: ./connectivity
+      #   run: |
+      #     if [[ ! -s tflint.json ]]; then
+      #       echo "No tflint output"
+      #       exit 0
+      #     fi
+      #     cat tflint.json
+      #     if [[ $(cat tflint.json | jq -r 'length') -gt 0 ]]; then
+      #       echo "Tflint errors found"
+      #       exit 1
+      #     fi
 
       - name: Terraform Plan
         working-directory: ./connectivity
