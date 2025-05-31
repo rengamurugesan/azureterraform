@@ -83,15 +83,19 @@ jobs:
         run: tflint --version
       
       - name: Init TFLint
+        working-directory: ./connectivity
         run: tflint --init
       
       - name: Run TFLint
+        working-directory: ./connectivity
         run: tflint -f compact
 
       - name: Lint Terraform code
+        working-directory: ./connectivity
         run: tflint --format=json . > tflint.json
         
       - name: Check tflint output
+        working-directory: ./connectivity
         run: |
           if [[ ! -s tflint.json ]]; then
             echo "No tflint output"
