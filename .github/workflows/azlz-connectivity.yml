@@ -150,8 +150,8 @@ jobs:
       fail-fast: false
       matrix:
         region: [eastus2, centralus]
-        environment: [connectivity]
-    environment: ${{ matrix.subscription}}
+        subscription: [connectivity]
+    environment: connectivity-deploy
     if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     steps:
       - name: Setup Terraform
