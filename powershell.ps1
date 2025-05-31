@@ -2,10 +2,10 @@
    Connect-AzAccount -TenantId e823de87-1173-410f-a37d-96c4083bb170
 
    # Define variables
-   $appName = "spn-gh-oidc-conn-deploy"
+   $appName = "spn-gh-oidc-conn-build"
    $orgName = "rengamurugesan"
    $repoName = "azureterraform"
-   $environmentName = "connectivity-deploy"
+   $environmentName = "connectivity-build"
    $subscriptionId = "e0930014-caa6-45da-a0d6-5d02bb6e89ff"
    
 
