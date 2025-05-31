@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         region: [eastus2, centralus]
-        environment: [connectivity]
-    environment: ${{ matrix.environment }}
+        subscription: [connectivity] 
+    environment: connectivity-build 
 
     steps:
       - name: Checkout Repository
@@ -40,7 +40,7 @@ jobs:
       - uses: bhowell2/github-substring-action@1.0.2
         id: envsubstr
         with:
-          value: "${{ matrix.environment }}"
+          value: "${{ matrix.subscription}}"
           length_from_start: 4
 
       - uses: bhowell2/github-substring-action@1.0.2
@@ -65,8 +65,8 @@ jobs:
           terraform init -reconfigure \
           -input=false  \
           -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" \
-          -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" \
-          -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" \
+          -backend-config="resource_group_name=rg-tf-backend-${{ matrix.subscription }}-${{ matrix.region }}-001" \
+          -backend-config="container_name=tfstate-${{ matrix.subscription}}-${{ matrix.region }}" \
           -backend-config="key=terraform.tfstate" \
 
       - name: Terraform Validate
@@ -109,16 +109,16 @@ jobs:
           terraform plan \
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
           -var="location=${{ matrix.region }}" \
-          -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" \
+          -var="resource_group_name=rg-tf-${{ matrix.subscription}}-${{ matrix.region }}-001" \
           -var-file=connectivity-${{ matrix.region }}.tfvars  \
-          -out=tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan \
+          -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan \
           -input=false
 
       - name: Show Terraform Plan
         working-directory: ./connectivity
         run: |
-          terraform show -json tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.environment }}-${{ matrix.region }}.json
-          cat tfplan-${{ matrix.environment }}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
+          terraform show -json tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan > tfplan-${{ matrix.subscription}}-${{ matrix.region }}.json
+          cat tfplan-${{ matrix.subscription}}-${{ matrix.region }}.json | jq '.resource_changes[] | {address: .address, change: .change.actions}'
         continue-on-error: true
 
       - name: Remove plugins from Terraform Directory
@@ -126,12 +126,12 @@ jobs:
           rm -rf ./connectivity/.terraform
 
       - name: Compress Artifact
-        run: zip -r tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip ./connectivity
+        run: zip -r tfplan-${{ matrix.subscription}}-${{ matrix.region }}.zip ./connectivity
 
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
+          name: tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.zip
           path: ./*.zip
           retention-days: 2
           if-no-files-found: warn
@@ -147,7 +147,7 @@ jobs:
       matrix:
         region: [eastus2, centralus]
         environment: [connectivity]
-    environment: ${{ matrix.environment }}
+    environment: ${{ matrix.subscription}}
     if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     steps:
       - name: Setup Terraform
@@ -156,7 +156,7 @@ jobs:
       - uses: bhowell2/github-substring-action@1.0.2
         id: envsubstr
         with:
-          value: "${{ matrix.environment }}"
+          value: "${{ matrix.subscription}}"
           length_from_start: 4
 
       - uses: bhowell2/github-substring-action@1.0.2
@@ -168,7 +168,7 @@ jobs:
       - name: Download Terraform Plan Artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan-${{ matrix.environment }}-${{ matrix.region }}-${{ github.run_id }}.zip
+          name: tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.zip
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
@@ -182,7 +182,7 @@ jobs:
         name: List Files in Connectivity Directory
 
       - name: extract tfplan
-        run: unzip -o tfplan-${{ matrix.environment }}-${{ matrix.region }}.zip -d ./connectivity
+        run: unzip -o tfplan-${{ matrix.subscription}}-${{ matrix.region }}.zip -d ./connectivity
 
       - name: Initialize Terraform
         id: terraform-init
@@ -191,8 +191,8 @@ jobs:
           terraform init -reconfigure \
           -input=false  \
           -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" \
-          -backend-config="resource_group_name=rg-tf-backend-${{ matrix.environment }}-${{ matrix.region }}-001" \
-          -backend-config="container_name=tfstate-${{ matrix.environment }}-${{ matrix.region }}" \
+          -backend-config="resource_group_name=rg-tf-backend-${{ matrix.subscription}}-${{ matrix.region }}-001" \
+          -backend-config="container_name=tfstate-${{ matrix.subscription}}-${{ matrix.region }}" \
           -backend-config="key=terraform.tfstate"
 
       - name: Terraform Apply
@@ -201,6 +201,6 @@ jobs:
           terraform apply -input=false \
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
           -var="location=${{ matrix.region }}" \
-          -var="resource_group_name=rg-tf-${{ matrix.environment }}-${{ matrix.region }}-001" \
+          -var="resource_group_name=rg-tf-${{ matrix.subscription}}-${{ matrix.region }}-001" \
           -var-file=connectivity-${{ matrix.region }}.tfvars  \
           -auto-approve
