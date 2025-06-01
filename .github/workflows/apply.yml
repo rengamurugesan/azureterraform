@@ -62,16 +62,7 @@ jobs:
       - name: Download Terraform Plan Artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.zip
-      
-      - run : |
-          echo "Running Terraform Plan for Subscription: ${{ matrix.subscription }} in Region: ${{ matrix.region }}"
-          echo "Working Directory: ${{ inputs.working_directory }}"
-          echo "Environment: ${{ inputs.environment }}"
-          echo "Subscription: ${{ matrix.subscription }}"
-          echo  " subscription ${{ secrets.SUBSCRIPTION_ID }}"
-          echo  " client ${{ secrets.AZURE_CLIENT_ID }}"
-          echo  " ten ${{ secrets.AZURE_TENANT_ID}} "
+          name: tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.zip 
      
 
       - name: Login to Azure using OIDC

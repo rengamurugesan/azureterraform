@@ -47,16 +47,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - run : |
-          echo "Running Terraform Plan for Subscription: ${{ matrix.subscription }} in Region: ${{ matrix.region }}"
-          echo "Working Directory: ${{ inputs.working_directory }}"
-          echo "Environment: ${{ inputs.environment }}"
-          echo "Subscription: ${{ matrix.subscription }}"
-          echo  " subscription ${{ secrets.SUBSCRIPTION_ID }}"
-          echo  " client ${{ secrets.AZURE_CLIENT_ID }}"
-          echo  " ten ${{ secrets.AZURE_TENANT_ID}} "
-
-
       - name: Login to Azure using OIDC
         uses: azure/login@v1
         with:
