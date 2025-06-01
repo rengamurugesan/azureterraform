@@ -22,16 +22,6 @@ on:
         required: true
         default: 'connectivity-build'
         
-    # secrets:
-    #   AZURE_CLIENT_ID:
-    #     required: true
-    #     description: The Azure Client ID for OIDC authentication
-    #   AZURE_TENANT_ID:
-    #     required: true
-    #     description: The Azure Tenant ID for OIDC authentication
-    #   SUBSCRIPTION_ID:
-    #     required: true
-    #     description: The Azure Subscription ID for OIDC authentication
 jobs:
   terraform-plan: 
     name: Terraform Plan for Connectivity
@@ -51,6 +41,11 @@ jobs:
           echo "Running Terraform Plan for Subscription: ${{ matrix.subscription }} in Region: ${{ matrix.region }}"
           echo "Working Directory: ${{ inputs.working_directory }}"
           echo "Environment: ${{ inputs.environment }}"
+          echo "Subscription: ${{ matrix.subscription }}"
+          echo  " subscription secrets.SUBSCRIPTION_ID"
+          echo  " client secrets.AZURE_CLIENT_ID "
+          echo  " ten secrets.AZURE_TENANT_ID "
+
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
