@@ -12,14 +12,15 @@ permissions:
 
 
 jobs:
-  UnitTests:
+  TerraformUnitTests:
+    name: Terraform Unit Tests
     uses: ./.github/workflows/tflint.yml
     with:
       working_directory: ./connectivity 
     
 
   TerraformPlan:
-    needs: UnitTests
+    needs: TerraformUnitTests
     uses: ./.github/workflows/plan.yml    
     with:
       regions: '["eastus2","centralus"]'
