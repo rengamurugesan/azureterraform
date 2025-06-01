@@ -33,8 +33,8 @@ on:
         required: true
         
 jobs:
-  terraform-plan: 
-    name: Terraform Plan for Connectivity
+  terraform-apply: 
+    name: Terraform Plan for  ${{ fromjson(inputs.subscription) }} in ${{ fromjson(inputs.regions) }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
