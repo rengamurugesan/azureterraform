@@ -12,11 +12,12 @@ permissions:
 
 
 jobs:
-  terraform-unit-tests:
-    name: Terraform Unit Tests
-    runs-on: ubuntu-latest    
-    steps:      
-     - uses: ./workflows/tflint.yml
-       with:
-          working_directory: ./connectivity
+  test:
+    uses: ./.github/workflows/tflint.yml@master
+    with:
+      working_directory: ./connectivity
+    
+
+
+    
         
