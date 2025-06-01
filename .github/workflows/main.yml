@@ -39,6 +39,8 @@ jobs:
       environment: connectivity
       subscription: '["connectivity"]'
     secrets:
+      inherit: true
+      # Inherit secrets from the parent workflow
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}

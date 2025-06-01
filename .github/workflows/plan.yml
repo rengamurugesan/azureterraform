@@ -34,7 +34,7 @@ on:
         
 jobs:
   terraform-plan: 
-    name: Terraform Plan for  ${{ fromjson(inputs.subscription) }} in ${{ fromjson(inputs.regions) }}
+    name: Terraform Plan for  
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
