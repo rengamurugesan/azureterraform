@@ -21,6 +21,16 @@ on:
         description: The environment to use for the workflow'
         required: true
         default: 'connectivity-build'
+    secrets:
+      AZURE_CLIENT_ID:
+        description: 'Azure Client ID for OIDC authentication'
+        required: true
+      AZURE_TENANT_ID:
+        description: 'Azure Tenant ID for OIDC authentication'
+        required: true
+      SUBSCRIPTION_ID:
+        description: 'Azure Subscription ID for the workflow'
+        required: true
         
 jobs:
   terraform-plan: 
