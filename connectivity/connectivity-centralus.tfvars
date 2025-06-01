@@ -2,7 +2,7 @@
 tags = {
   Environment = "Connectivity"
   Project     = "hub"
-  Owner       = "admin Team"
+  Owner       = "Infra DevOps Team"
   region      = "Central US"
 
 }
