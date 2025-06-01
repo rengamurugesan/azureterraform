@@ -1,7 +1,7 @@
 on:
   workflow_call:
     inputs:
-      working_directotry:
+      working_directory:
         type: string
         description: The working directory for the Terraform configuration files'
         required: true

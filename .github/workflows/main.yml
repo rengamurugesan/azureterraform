@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/tflint.yml
     with:
       working_directory: ./connectivity
-    
+      
 
 
     
