@@ -42,9 +42,9 @@ jobs:
           echo "Working Directory: ${{ inputs.working_directory }}"
           echo "Environment: ${{ inputs.environment }}"
           echo "Subscription: ${{ matrix.subscription }}"
-          echo  " subscription secrets.SUBSCRIPTION_ID"
-          echo  " client secrets.AZURE_CLIENT_ID "
-          echo  " ten secrets.AZURE_TENANT_ID "
+          echo  " subscription ${{ secrets.SUBSCRIPTION_ID }}"
+          echo  " client ${{ secrets.AZURE_CLIENT_ID }}"
+          echo  " ten ${{ secrets.AZURE_TENANT_ID}} "
 
 
       - name: Login to Azure using OIDC
