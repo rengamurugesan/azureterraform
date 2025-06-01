@@ -22,7 +22,7 @@ jobs:
     needs: UnitTests
     uses: ./.github/workflows/plan.yml
     with:
-      region: '["eastus2","centralus"]'
+      regions: '["eastus2","centralus"]'
       working_directory: ./connectivity
       environment: connectivity-build
       subscription: '[connectivity]'    
