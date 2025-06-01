@@ -13,13 +13,14 @@ permissions:
 
 jobs:
   TerraformUnitTests:
-    name: Terraform Unit Tests
+    name: Terraform Unit Tests and TFLint
     uses: ./.github/workflows/tflint.yml
     with:
       working_directory: ./connectivity 
     
 
   TerraformPlan:
+    name: Terraform Plan
     needs: TerraformUnitTests
     uses: ./.github/workflows/plan.yml    
     with:
@@ -32,6 +33,7 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
   TerraformApply:
+    name: Terraform Apply
     needs: TerraformPlan
     uses: ./.github/workflows/apply.yml
     with:
