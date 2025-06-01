@@ -36,7 +36,7 @@ jobs:
     with:
       regions: '["eastus2","centralus"]'
       working_directory: ./connectivity
-      environment: connectivity
+      environment: connectivity-deploy
       subscription: '["connectivity"]'
     secrets:      
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
