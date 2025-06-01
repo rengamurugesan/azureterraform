@@ -1,4 +1,4 @@
-name: Azure Landing Zone for Connectivity
+name: Azure Landing Zone for Connectivity - backup
 
 on:
   workflow_dispatch:

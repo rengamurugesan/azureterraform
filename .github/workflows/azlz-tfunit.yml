@@ -1,4 +1,4 @@
-name: Azure Landing Zone for Connectivity
+name: Azure Landing Zone for Connectivity - Terraform Test Plan and Apply
 
 on:
   workflow_dispatch:
