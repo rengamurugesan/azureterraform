@@ -83,11 +83,11 @@ jobs:
 
       
       - name: extract tfplan
-        run: unzip -o tfplan-${{ matrix.subscription}}-${{ matrix.region }}.zip -d  ${{ inputs.working_directory }}
+        run: unzip -o tfplan-${{ matrix.subscription}}-${{ matrix.region }}.zip -d  . 
 
       - name: Initialize Terraform
         id: terraform-init
-        working-directory:  ${{ inputs.working_directory }}/connectivity
+        working-directory:  ${{ inputs.working_directory }}
         run: |
           terraform init -reconfigure \
           -input=false  \
@@ -97,7 +97,7 @@ jobs:
           -backend-config="key=terraform.tfstate"
 
       - name: Terraform Apply
-        working-directory:  ${{ inputs.working_directory }}/connectivity
+        working-directory:  ${{ inputs.working_directory }}y
         run: |
           terraform apply -input=false \
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
