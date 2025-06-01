@@ -20,7 +20,7 @@ jobs:
 
   TerraformPlan:
     needs: UnitTests
-    uses: ./.github/workflows/azlz-connectivity.yml
+    uses: ./.github/workflows/plan.yml
     with:
       region: '["eastus2","centralus"]'
       working_directory: ./connectivity
