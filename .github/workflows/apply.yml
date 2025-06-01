@@ -97,7 +97,7 @@ jobs:
           -backend-config="key=terraform.tfstate"
 
       - name: Terraform Apply
-        working-directory:  ${{ inputs.working_directory }}y
+        working-directory:  ${{ inputs.working_directory }}
         run: |
           terraform apply -input=false \
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
