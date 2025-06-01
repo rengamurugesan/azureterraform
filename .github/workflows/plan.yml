@@ -22,16 +22,16 @@ on:
         required: true
         default: 'connectivity-build'
         
-    secrets:
-      AZURE_CLIENT_ID:
-        required: true
-        description: The Azure Client ID for OIDC authentication
-      AZURE_TENANT_ID:
-        required: true
-        description: The Azure Tenant ID for OIDC authentication
-      SUBSCRIPTION_ID:
-        required: true
-        description: The Azure Subscription ID for OIDC authentication
+    # secrets:
+    #   AZURE_CLIENT_ID:
+    #     required: true
+    #     description: The Azure Client ID for OIDC authentication
+    #   AZURE_TENANT_ID:
+    #     required: true
+    #     description: The Azure Tenant ID for OIDC authentication
+    #   SUBSCRIPTION_ID:
+    #     required: true
+    #     description: The Azure Subscription ID for OIDC authentication
 jobs:
   terraform-plan: 
     name: Terraform Plan for Connectivity
@@ -50,9 +50,9 @@ jobs:
       - name: Login to Azure using OIDC
         uses: azure/login@v1
         with:
-          client-id: ${{ inputs.secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ inputs.secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ inputs.secrets.SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - uses: bhowell2/github-substring-action@1.0.2
         id: envsubstr
