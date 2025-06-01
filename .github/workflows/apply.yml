@@ -1,0 +1,98 @@
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        type: string
+        description: The working directory for the Terraform configuration files'
+        required: true
+        default: './connectivity'
+      subscription:
+        type: string
+        description: The Azure subscription ID to use for the workflow'
+        required: true
+        default: 'connectivity'
+      regions:
+        type: string
+        description: The Azure regions to use for the workflow'
+        required: true
+        default: 'eastus2,centralus' 
+      environment:
+        type: string
+        description: The environment to use for the workflow'
+        required: true
+        default: 'connectivity-build'
+    secrets:
+      AZURE_CLIENT_ID:
+        description: 'Azure Client ID for OIDC authentication'
+        required: true
+      AZURE_TENANT_ID:
+        description: 'Azure Tenant ID for OIDC authentication'
+        required: true
+      SUBSCRIPTION_ID:
+        description: 'Azure Subscription ID for the workflow'
+        required: true
+        
+jobs:
+  terraform-plan: 
+    name: Terraform Plan for Connectivity
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        region: ${{ fromjson(inputs.regions) }}
+        subscription: ${{ fromjson(inputs.subscription) }} 
+    environment: ${{ inputs.environment }}  
+
+    steps:
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: envsubstr
+        with:
+          value: "${{ matrix.subscription}}"
+          length_from_start: 4
+
+      - uses: bhowell2/github-substring-action@1.0.2
+        id: regionsubstr
+        with:
+          value: "${{ matrix.region }}"
+          length_from_start: 6
+
+      - name: Download Terraform Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.zip
+     
+
+      - name: Login to Azure using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      
+      - name: extract tfplan
+        run: unzip -o tfplan-${{ matrix.subscription}}-${{ matrix.region }}.zip -d  ${{ inputs.working_directory }}
+
+      - name: Initialize Terraform
+        id: terraform-init
+        working-directory:  ${{ inputs.working_directory }}/connectivity
+        run: |
+          terraform init -reconfigure \
+          -input=false  \
+          -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" \
+          -backend-config="resource_group_name=rg-tf-backend-${{ matrix.subscription}}-${{ matrix.region }}-001" \
+          -backend-config="container_name=tfstate-${{ matrix.subscription}}-${{ matrix.region }}" \
+          -backend-config="key=terraform.tfstate"
+
+      - name: Terraform Apply
+        working-directory:  ${{ inputs.working_directory }}/connectivity
+        run: |
+          terraform apply -input=false \
+          -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
+          -var="location=${{ matrix.region }}" \
+          -var="resource_group_name=rg-tf-${{ matrix.subscription}}-${{ matrix.region }}-001" \
+          -var-file=connectivity-${{ matrix.region }}.tfvars  \
+          -auto-approve
