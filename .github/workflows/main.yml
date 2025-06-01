@@ -12,10 +12,36 @@ permissions:
 
 
 jobs:
-  test:
+  UnitTests:
     uses: ./.github/workflows/tflint.yml
     with:
+      working_directory: ./connectivity 
+    secrets: inherit
+
+  TerraformPlan:
+    needs: UnitTests
+    uses: ./.github/workflows/azlz-connectivity.yml
+    with:
+      region: '["eastus2","centralus"]'
       working_directory: ./connectivity
+      environment: connectivity-build
+      subscription: '[connectivity]'    
+    secrets: 
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+    
+    
+    
+
+#   TerraformApply:
+#     needs: TerraformPlan
+#     uses: ./.github/workflows/terraformapply.yml
+#     with:
+#       region: eastus2
+#       environment: connectivity
+#     secrets: inherit
+
       
 
 

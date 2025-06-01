@@ -20,12 +20,12 @@ jobs:
       - name: Terraform Format Check
         id: terraform-fmt
         run: terraform fmt -check
-        working-directory: ./connectivity
+        working-directory: ${{ inputs.working_directory }}
         continue-on-error: true
 
       - name: Initialize Terraform
         id: terraform-init
-        working-directory: ./connectivity
+        working-directory: ${{ inputs.working_directory }}
         run: |
           terraform init -reconfigure \
           -input=false  \
@@ -33,7 +33,7 @@ jobs:
       - name: Terraform Validate
         id: terraform-validate
         run: terraform validate -no-color
-        working-directory: ./connectivity
+        working-directory: ${{ inputs.working_directory }}
       
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
@@ -44,9 +44,9 @@ jobs:
         run: tflint --version
       
       - name: Init TFLint
-        working-directory: ./connectivity
+        working-directory: ${{ inputs.working_directory }}
         run: tflint --init
       
       - name: Run TFLint
-        working-directory: ./connectivity
+        working-directory: ${{ inputs.working_directory }}
         run: tflint  --minimum-failure-severity warning -f compact
