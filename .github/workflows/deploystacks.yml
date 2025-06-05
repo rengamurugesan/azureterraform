@@ -158,7 +158,7 @@ jobs:
   
   Terraformlz1:
     name: landing zone foundation 
-    needs: [TerraformUnitTests]   
+    needs: [TerraformUnitTests,apimmanagement,AzurePostgresql,AzureFunctionApp,Terraformlz]   
     runs-on: ubuntu-latest 
     environment: QA   
     steps:
@@ -192,7 +192,7 @@ jobs:
           tflint_version: v0.52.0
   AzureFunctionApp1:
       name: Azure Function App 
-      needs: [TerraformUnitTests]   
+      needs: [TerraformUnitTests,apimmanagement,AzurePostgresql,AzureFunctionApp,Terraformlz]   
       runs-on: ubuntu-latest 
       environment: QA   
       steps:
@@ -226,7 +226,7 @@ jobs:
             tflint_version: v0.52.0
   AzurePostgresql1:
       name: Azure  Postgre sql
-      needs: [TerraformUnitTests]   
+      needs: [TerraformUnitTests,apimmanagement,AzurePostgresql,AzureFunctionApp,Terraformlz]  
       runs-on: ubuntu-latest 
       environment: QA   
       steps:
@@ -260,7 +260,7 @@ jobs:
             tflint_version: v0.52.0
   apimmanagement1:
       name: Azure API management
-      needs: [TerraformUnitTests]   
+      needs: [TerraformUnitTests,apimmanagement,AzurePostgresql,AzureFunctionApp,Terraformlz]  
       runs-on: ubuntu-latest   
       environment: QA 
       steps:
