@@ -3,24 +3,29 @@ on:
     inputs:
       working_directory:
         type: string
-        description: The working directory for the Terraform configuration files'
+        description: The working directory for the Terraform configuration files
         required: true
         default: './connectivity'
       subscription:
         type: string
-        description: The Azure subscription ID to use for the workflow'
+        description: The Azure subscription ID to use for the workflow
         required: true
         default: 'connectivity'
       regions:
         type: string
-        description: The Azure regions to use for the workflow'
+        description: The Azure regions to use for the workflow
         required: true
         default: 'eastus2,centralus' 
       environment:
         type: string
-        description: The environment to use for the workflow'
+        description: The environment to use for the workflow
         required: true
         default: 'connectivity-build'
+      workload_type:
+        type: string
+        description: The Azure workload type like connectivity,management, dev,qa,uat,prod
+        required: true
+        default: 'connectvitiy'
     secrets:
       AZURE_CLIENT_ID:
         description: 'Azure Client ID for OIDC authentication'
@@ -94,5 +99,5 @@ jobs:
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
           -var="location=${{ matrix.region }}" \
           -var="resource_group_name=rg-tf-${{ matrix.subscription}}-${{ matrix.region }}-001" \
-          -var-file=connectivity-${{ matrix.region }}.tfvars  \
+          -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars  \
           -auto-approve

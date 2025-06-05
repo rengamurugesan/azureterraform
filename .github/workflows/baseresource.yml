@@ -1,0 +1,49 @@
+name: Azure Landing Zone Core / Base
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  id-token: write
+jobs:
+    Corecompoents:
+        name: Terraform Plan for Connectivity
+        runs-on: ubuntu-latest  
+        steps:
+          - name: Checkout Repository
+            uses: actions/checkout@v3
+          - name: Login to Azure using OIDC
+            uses: azure/login@v1
+            with:
+               client-id: ${{ secrets.AZURE_CLIENT_ID }}
+               tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+               subscription-id: ${{ secrets.SUBSCRIPTION_ID }}          
+          
+          - name: Setup Terraform
+            uses: hashicorp/setup-terraform@v3
+
+          - name: Terraform Format Check
+            id: terraform-fmt
+            run: terraform fmt -check
+            working-directory: ./connectivity
+            continue-on-error: true
+
+          - name: Initialize Terraform
+            id: terraform-init
+            working-directory: ./connectivity
+            run: |
+                terraform init -reconfigure \
+                -input=false  \
+                -backend-config="storage_account_name=sttf${{ steps.envsubstr.outputs.substring }}${{ steps.regionsubstr.outputs.substring }}001" \
+                -backend-config="resource_group_name=rg-tf-backend-${{ matrix.subscription }}-${{ matrix.region }}-001" \
+                -backend-config="container_name=tfstate-${{ matrix.subscription}}-${{ matrix.region }}" \
+                -backend-config="key=terraform.tfstate" \
+
+          - name: Terraform Validate
+            id: terraform-validate
+            run: terraform validate -no-color
+            working-directory: ./connectivity
