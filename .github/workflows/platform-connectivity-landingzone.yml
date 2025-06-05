@@ -39,6 +39,7 @@ jobs:
       working_directory: ./connectivity
       environment: connectivity-deploy
       subscription: '["connectivity"]'
+      workload_type: connectivity
     secrets:      
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
