@@ -18,7 +18,7 @@ jobs:
     name: Terraform Unit Tests and TFLint
     uses: ./.github/workflows/tflint.yml
     with:
-      working_directory:  ${{env.WORKING_DIR}}/01-lz-network
+      working_directory: ./terrform//01-lz-network
   Terraformlz:
     name: landing zone foundation 
     needs: [TerraformUnitTests]   
@@ -36,6 +36,7 @@ jobs:
         run: terraform fmt -check
         working-directory: ${{env.WORKING_DIR}}/01-lz-network
         continue-on-error: true
+      
 
       - name: Initialize Terraform
         id: terraform-init
