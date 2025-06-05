@@ -1,4 +1,4 @@
-name: Azure Appliation Landing Zone - Core
+name: Azure Appliation Landing Zone
 
 on:
   workflow_dispatch:
