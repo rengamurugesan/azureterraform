@@ -56,7 +56,8 @@ jobs:
   AzureFunctionApp:
       name: Azure Function App 
       needs: [TerraformUnitTests]   
-      runs-on: ubuntu-latest    
+      runs-on: ubuntu-latest 
+      environment: dev   
       steps:
         - name: Checkout Repository
           uses: actions/checkout@v3
@@ -89,7 +90,8 @@ jobs:
   AzurePostgresql:
       name: Azure  Postgre sql
       needs: [TerraformUnitTests]   
-      runs-on: ubuntu-latest    
+      runs-on: ubuntu-latest 
+      environment: dev   
       steps:
         - name: Checkout Repository
           uses: actions/checkout@v3
@@ -122,7 +124,8 @@ jobs:
   apimmanagement:
       name: Azure API management
       needs: [TerraformUnitTests]   
-      runs-on: ubuntu-latest    
+      runs-on: ubuntu-latest   
+      environment: dev 
       steps:
         - name: Checkout Repository
           uses: actions/checkout@v3
@@ -153,6 +156,142 @@ jobs:
           with:
             tflint_version: v0.52.0
   
+  Terraformlz1:
+    name: landing zone foundation 
+    needs: [TerraformUnitTests]   
+    runs-on: ubuntu-latest 
+    environment: QA   
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format Check
+        id: terraform-fmt
+        run: terraform fmt -check
+        working-directory: ${{ inputs.working_directory }}
+        continue-on-error: true
+
+      - name: Initialize Terraform
+        id: terraform-init
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform init -reconfigure \
+          -input=false  \
+          -backend=false     
+      - name: Terraform Validate
+        id: terraform-validate
+        run: terraform validate -no-color
+        working-directory: ${{ inputs.working_directory }}
+      
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.52.0
+  AzureFunctionApp1:
+      name: Azure Function App 
+      needs: [TerraformUnitTests]   
+      runs-on: ubuntu-latest 
+      environment: QA   
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+          
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+
+        - name: Terraform Format Check
+          id: terraform-fmt
+          run: terraform fmt -check
+          working-directory: ${{ inputs.working_directory }}
+          continue-on-error: true
+
+        - name: Initialize Terraform
+          id: terraform-init
+          working-directory: ${{ inputs.working_directory }}
+          run: |
+            terraform init -reconfigure \
+            -input=false  \
+            -backend=false     
+        - name: Terraform Validate
+          id: terraform-validate
+          run: terraform validate -no-color
+          working-directory: ${{ inputs.working_directory }}
+        
+        - name: Setup TFLint
+          uses: terraform-linters/setup-tflint@v4
+          with:
+            tflint_version: v0.52.0
+  AzurePostgresql1:
+      name: Azure  Postgre sql
+      needs: [TerraformUnitTests]   
+      runs-on: ubuntu-latest 
+      environment: QA   
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+          
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+
+        - name: Terraform Format Check
+          id: terraform-fmt
+          run: terraform fmt -check
+          working-directory: ${{ inputs.working_directory }}
+          continue-on-error: true
+
+        - name: Initialize Terraform
+          id: terraform-init
+          working-directory: ${{ inputs.working_directory }}
+          run: |
+            terraform init -reconfigure \
+            -input=false  \
+            -backend=false     
+        - name: Terraform Validate
+          id: terraform-validate
+          run: terraform validate -no-color
+          working-directory: ${{ inputs.working_directory }}
+        
+        - name: Setup TFLint
+          uses: terraform-linters/setup-tflint@v4
+          with:
+            tflint_version: v0.52.0
+  apimmanagement1:
+      name: Azure API management
+      needs: [TerraformUnitTests]   
+      runs-on: ubuntu-latest   
+      environment: QA 
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+          
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3
+
+        - name: Terraform Format Check
+          id: terraform-fmt
+          run: terraform fmt -check
+          working-directory: ${{ inputs.working_directory }}
+          continue-on-error: true
+
+        - name: Initialize Terraform
+          id: terraform-init
+          working-directory: ${{ inputs.working_directory }}
+          run: |
+            terraform init -reconfigure \
+            -input=false  \
+            -backend=false     
+        - name: Terraform Validate
+          id: terraform-validate
+          run: terraform validate -no-color
+          working-directory: ${{ inputs.working_directory }}
+        
+        - name: Setup TFLint
+          uses: terraform-linters/setup-tflint@v4
+          with:
+            tflint_version: v0.52.0
     
 
 
