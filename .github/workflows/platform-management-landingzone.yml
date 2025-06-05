@@ -1,5 +1,4 @@
-name: Azure Landing Zone for Management - Workflow
-
+name: Azure Landing Zone for Management 
 on:
   workflow_dispatch:
   # push:
