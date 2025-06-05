@@ -34,7 +34,7 @@ jobs:
       - name: Terraform Format Check
         id: terraform-fmt
         run: terraform fmt -check
-        working-directory: ${{ inputs.working_directory }}/01-lz-network
+        working-directory: $WORKING_DIR/01-lz-network
         continue-on-error: true
 
       - name: Initialize Terraform
@@ -47,7 +47,7 @@ jobs:
       - name: Terraform Validate
         id: terraform-validate
         run: terraform validate -no-color
-        working-directory: ${{ inputs.working_directory }}/01-lz-network
+        working-directory: $WORKING_DIR//01-lz-network
       
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
