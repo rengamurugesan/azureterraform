@@ -6,7 +6,7 @@ on:
   #   branches:
   #     - master
 env:
-  WORKING_DIR: ./application 
+  WORKING_DIR: ./terrform/
 
 permissions:
   contents: read
@@ -34,12 +34,12 @@ jobs:
       - name: Terraform Format Check
         id: terraform-fmt
         run: terraform fmt -check
-        working-directory: ${{ inputs.working_directory }}
+        working-directory: ${{ inputs.working_directory }}/01-lz-network
         continue-on-error: true
 
       - name: Initialize Terraform
         id: terraform-init
-        working-directory: ${{ inputs.working_directory }}
+        working-directory: ${{ inputs.working_directory }}/01-lz-network
         run: |
           terraform init -reconfigure \
           -input=false  \
@@ -47,7 +47,7 @@ jobs:
       - name: Terraform Validate
         id: terraform-validate
         run: terraform validate -no-color
-        working-directory: ${{ inputs.working_directory }}
+        working-directory: ${{ inputs.working_directory }}/01-lz-network
       
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
