@@ -1,0 +1,126 @@
+name: Azure Appliation Landing Zone - Core
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - master
+env:
+  WORKING_DIR: ./application 
+
+permissions:
+  contents: read
+  id-token: write
+#if: env.ENVIRONMENT == 'production'
+
+jobs:
+  TerraformUnitTests:
+    name: Terraform Unit Tests and TFLint
+    uses: ./.github/workflows/tflint.yml
+    with:
+      working_directory: $WORKING_DIR
+  Terraformlz:
+    name: landing zone foundation 
+    needs: [TerraformUnitTests]   
+    runs-on: ubuntu-latest    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format Check
+        id: terraform-fmt
+        run: terraform fmt -check
+        working-directory: ${{ inputs.working_directory }}
+        continue-on-error: true
+
+      - name: Initialize Terraform
+        id: terraform-init
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform init -reconfigure \
+          -input=false  \
+          -backend=false     
+      - name: Terraform Validate
+        id: terraform-validate
+        run: terraform validate -no-color
+        working-directory: ${{ inputs.working_directory }}
+      
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.52.0
+
+  # TerraformPlan:
+  #   name: Terraform Plan
+  #   needs: TerraformUnitTests
+  #   uses: ./.github/workflows/plan.yml    
+  #   with:
+  #     regions: '["eastus2","centralus"]'
+  #     working_directory: $WORKING_DIR
+  #     environment: connectivity-build
+  #     subscription: '["connectivity"]'
+  #   secrets:
+  #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  #     SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+  # Development:
+  #   name: Terraform Apply
+  #   needs: [TerraformPlan]
+  #   uses: ./.github/workflows/apply.yml
+  #   with:
+  #     regions: '["eastus2","centralus"]'
+  #     working_directory: $WORKING_DIR
+  #     environment: Development
+  #     subscription: '["connectivity"]'
+  #   secrets:      
+  #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  #     SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+  # QA:
+  #   name: Terraform Apply
+  #   needs: [TerraformPlan,Development]
+  #   uses: ./.github/workflows/apply.yml
+  #   with:
+  #     regions: '["eastus2","centralus"]'
+  #     working_directory: $WORKING_DIR
+  #     environment: QA
+  #     subscription: '["connectivity"]'
+  #   secrets:      
+  #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  #     SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+  # UAT:
+  #   name: Terraform Apply
+  #   needs: TerraformPlan
+  #   uses: ./.github/workflows/apply.yml
+  #   with:
+  #     regions: '["eastus2","centralus"]'
+  #     working_directory: $WORKING_DIR
+  #     environment: UAT
+  #     subscription: '["connectivity"]'
+  #   secrets:      
+  #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  #     SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+  # Production:
+  #   name: Terraform Apply
+  #   needs: TerraformPlan
+  #   uses: ./.github/workflows/apply.yml
+  #   with:
+  #     regions: '["eastus2","centralus"]'
+  #     working_directory: $WORKING_DIR
+  #     environment: Production
+  #     subscription: '["connectivity"]'
+  #     workload_type: 'connectivity'
+  #   secrets:      
+  #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  #     SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      
+
+
+    
+        

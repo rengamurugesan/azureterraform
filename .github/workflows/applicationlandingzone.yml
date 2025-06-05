@@ -35,7 +35,7 @@ jobs:
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
   Development:
     name: Terraform Apply
-    needs: TerraformPlan
+    needs: [TerraformPlan]
     uses: ./.github/workflows/apply.yml
     with:
       regions: '["eastus2","centralus"]'
@@ -48,7 +48,7 @@ jobs:
       SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
   QA:
     name: Terraform Apply
-    needs: TerraformPlan
+    needs: [TerraformPlan,Development]
     uses: ./.github/workflows/apply.yml
     with:
       regions: '["eastus2","centralus"]'
