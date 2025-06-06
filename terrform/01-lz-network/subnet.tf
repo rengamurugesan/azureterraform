@@ -11,7 +11,7 @@ resource "azurerm_network_security_group" "snetshared_nsg" {
   name                = local.nsg_shared_name
   location            = var.region
   resource_group_name = azurerm_resource_group.spoke_rg.name
-  security_rule       = {}
+  security_rule {}
 
   tags = var.tags
 }
