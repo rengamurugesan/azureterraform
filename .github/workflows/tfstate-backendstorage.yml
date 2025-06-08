@@ -7,7 +7,7 @@ on:
         type: string
         description: The Azure subscription ID to use for the workflow
         required: true
-        default: '"connectivity"'
+        default: '["connectivity"]'
       environment:
         type: string
         description: The environment to use for the workflow
@@ -17,7 +17,7 @@ on:
         type: string
         description: The Azure regions to use for the workflow
         required: true
-        default: '"eastus2","centralus"' 
+        default: '["eastus2","centralus"]' 
 
 permissions:
   contents: read
