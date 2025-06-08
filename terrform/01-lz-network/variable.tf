@@ -71,5 +71,5 @@ variable "workload" {
 variable "instance" {
   description = "Instance number"
   type        = string
-  default     = "01"
+  default     = "001"
 }

@@ -20,10 +20,9 @@ jobs:
     with:
       working_directory: ./terrform//01-lz-network
   Terraformlz:
-    name: landing zone foundation 
-    needs: [TerraformUnitTests]   
+    name: landing zone foundation    
     runs-on: ubuntu-latest 
-    environment: dev   
+    environment: Devlopment   
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -45,6 +44,7 @@ jobs:
           terraform init -reconfigure \
           -input=false  \
           -backend=false     
+          
       - name: Terraform Validate
         id: terraform-validate
         run: terraform validate -no-color
@@ -54,6 +54,7 @@ jobs:
         uses: terraform-linters/setup-tflint@v4
         with:
           tflint_version: v0.52.0
+
   AzureFunctionApp:
       name: Azure Function App 
       needs: [TerraformUnitTests]   

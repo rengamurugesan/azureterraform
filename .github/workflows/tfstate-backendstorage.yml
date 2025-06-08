@@ -2,6 +2,22 @@ name: Azure Storage Account for Terraform State file management
 
 on:
   workflow_dispatch:
+    inputs: 
+      subscription:
+        type: string
+        description: The Azure subscription ID to use for the workflow
+        required: true
+        default: 'connectivity'
+      environment:
+        type: string
+        description: The environment to use for the workflow
+        required: true
+        default: 'connectivity-build'
+      regions:
+        type: string
+        description: The Azure regions to use for the workflow
+        required: true
+        default: 'eastus2,centralus' 
 
 permissions:
   contents: read
@@ -13,9 +29,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: [eastus2, centralus]
-        subscriptions: [connectivity, management]
-    environment: connectivity-build
+        region: ${{ fromjson(inputs.regions) }}
+        subscription: ${{ fromjson(inputs.subscription) }} 
+    environment:  ${{ inputs.environment }}  
 
     steps:
       - name: Checkout Repository
