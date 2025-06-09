@@ -1,9 +1,9 @@
 name: Terraform state file creation
 
 on:
-  push:
-    branches:
-      - master    
+  # push:
+  #   branches:
+  #     - master    
 
   workflow_dispatch:
     inputs: 
@@ -11,7 +11,7 @@ on:
         type: string
         description: The Azure subscription ID to use for the workflow
         required: true
-        default: connectivity
+        default: '["connectivity", "management"]'
       environment:
         type: string
         description: The environment to use for the workflow
