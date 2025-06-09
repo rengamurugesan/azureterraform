@@ -1,5 +1,5 @@
 
-resource_group_nam = "rg-tf-management-centralus-001"
+resource_group_name = "rg-tf-management-centralus-001"
 tags = {
   Environment   = "Management"
   Project       = "infra"

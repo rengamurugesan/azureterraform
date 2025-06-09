@@ -1,4 +1,4 @@
-resource_group_nam = "rg-tf-connectivity-eastus2-001"
+resource_group_name = "rg-tf-connectivity-eastus2-001"
 tags = {
   Environment   = "Connectivity"
   Project       = "infra"
