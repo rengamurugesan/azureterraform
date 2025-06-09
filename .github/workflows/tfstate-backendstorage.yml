@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         region: [eastus2, centralus]
-        subscriptions: ${{ fromjson(inputs.subscription) }}  #[connectivity, management]
+        subscriptions: ${{ fromjson(inputs.subscriptions) }}  #[connectivity, management]
     environment: ${{inputs.environment}}
 
     steps:
