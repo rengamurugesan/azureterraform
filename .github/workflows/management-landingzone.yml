@@ -45,7 +45,7 @@ jobs:
       regions: '["eastus2","centralus"]'
       working_directory: ${{inputs.working_directory}}
       environment: management
-      subscription: '["connectivity"]'
+      subscription: '["management"]'
       workload_type: management
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -59,7 +59,7 @@ jobs:
       regions: '["eastus2","centralus"]'
       working_directory: ${{inputs.working_directory}}
       environment: management
-      subscription: '["connectivity"]'
+      subscription: '["management"]'
       workload_type: management
     secrets:      
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
