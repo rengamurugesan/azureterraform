@@ -95,8 +95,5 @@ jobs:
       - name: Terraform Apply
         working-directory:  ${{ inputs.working_directory }}
         run: |
-          terraform apply -input=false \
-          -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
-          -var="location=${{ matrix.region }}" \        
-          -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars  \
-          -auto-approve
+          echo terraform apply -input=false  -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}"  -var="location=${{ matrix.region }}"   -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars  -auto-approve
+          terraform apply -input=false  -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}"  -var="location=${{ matrix.region }}"   -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars  -auto-approve
