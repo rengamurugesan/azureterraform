@@ -3,11 +3,11 @@ name: Terraform state file creation
 on:
   workflow_dispatch:
     inputs: 
-      subscription:
+      subscriptions:
         type: string
         description: The Azure subscription ID to use for the workflow
         required: true
-        default: 'connectivity'
+        default: '["connectivity"]'
       environment:
         type: string
         description: The environment to use for the workflow
@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         region: ${{ fromjson(inputs.regions) }}
-        subscription: ${{ inputs.subscription }} 
+        subscription: ${{ inputs.subscriptions }} 
     environment:  ${{ inputs.environment }}  
 
     steps:
@@ -44,7 +44,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - run: |
-         echo ${{ inputs.subscription }} 
+         echo ${{ matrix.subscription }} 
          echo ${{ matrix.region }}
 
       - uses: bhowell2/github-substring-action@1.0.2
