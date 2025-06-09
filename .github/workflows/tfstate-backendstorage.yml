@@ -32,7 +32,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: ${{ fromjson(inputs.regions) }}        
+        region: ["eastus2","centralus"] #${{ fromjson(inputs.regions) }}  
+
     environment:  ${{ inputs.environment }}  
 
     steps:
