@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/plan.yml    
     with:
       regions: '["eastus2","centralus"]'
-      working_directory: ./management
+      working_directory: ${{inputs.working_directory}}
       environment: management
       subscription: '["connectivity"]'
       workload_type: management
@@ -57,7 +57,7 @@ jobs:
     uses: ./.github/workflows/apply.yml
     with:
       regions: '["eastus2","centralus"]'
-      working_directory: ./management
+      working_directory: ${{inputs.working_directory}}
       environment: management
       subscription: '["connectivity"]'
       workload_type: management
