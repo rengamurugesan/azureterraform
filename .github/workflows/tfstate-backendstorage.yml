@@ -32,8 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: ${{ fromjson(inputs.regions) }}
-        subscription: ${{ inputs.subscriptions }} 
+        region: ${{ fromjson(inputs.regions) }}        
     environment:  ${{ inputs.environment }}  
 
     steps:
