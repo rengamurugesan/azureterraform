@@ -33,7 +33,7 @@ jobs:
       fail-fast: false
       matrix:
         region: ${{ fromjson(inputs.regions) }}
-        subscription: ${{ inputs.subscriptions }} 
+        subscription: ${{ fromjson(inputs.subscriptions) }} 
     environment:  ${{ inputs.environment }}  
 
     steps:
