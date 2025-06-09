@@ -3,7 +3,8 @@ name: Terraform state file creation
 on:
   push:
     branches:
-      - master
+      - master    
+
   workflow_dispatch:
     inputs: 
       subscriptions:
@@ -34,7 +35,7 @@ jobs:
       matrix:
         region: [eastus2, centralus]
         subscriptions: [connectivity, management]
-    environment: connectivity-build
+    environment: ${{inputs.environment}}
 
     steps:
       - name: Checkout Repository
