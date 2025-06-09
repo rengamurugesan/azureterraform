@@ -15,16 +15,17 @@ jobs:
     name: Terraform Unit Tests and TFLint
     uses: ./.github/workflows/tflint.yml
     with:
-      working_directory: ./connectivity 
+      working_directory: ./management 
   TerraformPlan:
     name: Terraform Plan
     needs: TerraformUnitTests
     uses: ./.github/workflows/plan.yml    
     with:
       regions: '["eastus2","centralus"]'
-      working_directory: ./connectivity
-      environment: connectivity-build
+      working_directory: ./management
+      environment: management
       subscription: '["connectivity"]'
+      workload_type: management
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -35,9 +36,10 @@ jobs:
     uses: ./.github/workflows/apply.yml
     with:
       regions: '["eastus2","centralus"]'
-      working_directory: ./connectivity
-      environment: connectivity-deploy
+      working_directory: ./management
+      environment: manegement
       subscription: '["connectivity"]'
+      workload_type: management
     secrets:      
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

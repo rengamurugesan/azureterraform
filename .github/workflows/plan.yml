@@ -21,6 +21,11 @@ on:
         description: The environment to use for the workflow'
         required: true
         default: 'connectivity-build'
+      workload_type:
+        type: string
+        description: The Azure workload type like connectivity,management, dev,qa,uat,prod
+        required: true
+        default: 'connectvitiy'
     secrets:
       AZURE_CLIENT_ID:
         description: 'Azure Client ID for OIDC authentication'
@@ -93,7 +98,7 @@ jobs:
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
           -var="location=${{ matrix.region }}" \
           -var="resource_group_name=rg-tf-${{ matrix.subscription}}-${{ matrix.region }}-001" \
-          -var-file=connectivity-${{ matrix.region }}.tfvars  \
+          -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars  \
           -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan \
           -input=false
 

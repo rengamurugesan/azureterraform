@@ -47,7 +47,8 @@ jobs:
       regions:  ${{ inputs.regions }}
       working_directory:  ${{inputs.working_directory}}
       environment:  ${{inputs.environment}}
-      subscription:  ${{ inputs.subscriptions }} 
+      subscription:  ${{ inputs.subscriptions }}
+      workload_type: connectivity 
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
