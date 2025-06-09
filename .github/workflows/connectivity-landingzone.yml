@@ -44,10 +44,10 @@ jobs:
     needs: TerraformUnitTests
     uses: ./.github/workflows/plan.yml    
     with:
-      regions:  ${{ fromjson(inputs.regions) }}
+      regions:  ${{ inputs.regions }}
       working_directory:  ${{inputs.working_directory}}
       environment:  ${{inputs.environment}}
-      subscription:  ${{ fromjson(inputs.subscriptions) }} 
+      subscription:  ${{ inputs.subscriptions }} 
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -57,10 +57,10 @@ jobs:
     needs: TerraformPlan
     uses: ./.github/workflows/apply.yml
     with:
-      regions:  ${{ fromjson(inputs.regions) }}
+      regions:  ${{ inputs.regions }}
       working_directory:  ${{inputs.working_directory}}
       environment:  ${{inputs.environment}}
-      subscription:  ${{ fromjson(inputs.subscriptions) }} 
+      subscription:  ${{ inputs.subscriptions }} 
       workload_type: connectivity
     secrets:      
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
