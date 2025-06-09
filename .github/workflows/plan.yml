@@ -94,12 +94,8 @@ jobs:
       - name: Terraform Plan
         working-directory: ${{ inputs.working_directory }}
         run: |
-          terraform plan \
-          -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
-          -var="location=${{ matrix.region }}" \          
-          -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars  \
-          -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan \
-          -input=false
+          echo terraform plan  -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}"  -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan  -input=false
+          terraform plan  -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" -var="location=${{ matrix.region }}"  -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan  -input=false
 
       - name: Show Terraform Plan
         working-directory: ${{ inputs.working_directory }}
