@@ -1,10 +1,32 @@
-name: Azure Landing Zone for Connectivity - Workflow
+name: Platform Landing Zone for Connectivity - Workflow
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
+    inputs: 
+      subscriptions:
+        type: string
+        description: The Azure subscription ID to use for the workflow
+        required: true
+        default: '["connectivity"]'
+      environment:
+        type: string
+        description: The environment to use for the workflow
+        required: true
+        default: 'connectivity-build'
+      regions:
+        type: string
+        description: The Azure regions to use for the workflow
+        required: true
+        default: '["eastus2","centralus"]' 
+      working_directory:
+        type: string
+        description: The working directory for the Terraform configuration files'
+        required: true
+        default: './connectivity'
+
+  # push:
+  #   branches:
+  #     - master
 
 permissions:
   contents: read
@@ -16,16 +38,16 @@ jobs:
     name: Terraform Unit Tests and TFLint
     uses: ./.github/workflows/tflint.yml
     with:
-      working_directory: ./connectivity 
+      working_directory: ${{inputs.working_directory}}
   TerraformPlan:
     name: Terraform Plan
     needs: TerraformUnitTests
     uses: ./.github/workflows/plan.yml    
     with:
-      regions: '["eastus2","centralus"]'
-      working_directory: ./connectivity
-      environment: connectivity-build
-      subscription: '["connectivity"]'
+      regions:  ${{ fromjson(inputs.regions) }}
+      working_directory:  ${{inputs.working_directory}}
+      environment:  ${{inputs.environment}}
+      subscription:  ${{ fromjson(inputs.subscriptions) }} 
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -35,10 +57,10 @@ jobs:
     needs: TerraformPlan
     uses: ./.github/workflows/apply.yml
     with:
-      regions: '["eastus2","centralus"]'
-      working_directory: ./connectivity
-      environment: connectivity-deploy
-      subscription: '["connectivity"]'
+      regions:  ${{ fromjson(inputs.regions) }}
+      working_directory:  ${{inputs.working_directory}}
+      environment:  ${{inputs.environment}}
+      subscription:  ${{ fromjson(inputs.subscriptions) }} 
       workload_type: connectivity
     secrets:      
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
