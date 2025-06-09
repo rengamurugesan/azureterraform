@@ -32,9 +32,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: ["eastus2","centralus"] #${{ fromjson(inputs.regions) }}  
-
-    environment:  ${{ inputs.environment }}  
+        region: [eastus2, centralus]
+        subscriptions: [connectivity, management]
+    environment: connectivity-build
 
     steps:
       - name: Checkout Repository
@@ -46,14 +46,11 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
-      - run: |
-         echo ${{ inputs.subscription }} 
-         echo ${{ matrix.region }}
 
       - uses: bhowell2/github-substring-action@1.0.2
-        id: subscription
+        id: env
         with:
-          value: ${{ inputs.subscription }} 
+          value: "${{ matrix.subscriptions}}"
           length_from_start: 4
 
       - uses: bhowell2/github-substring-action@1.0.2
@@ -64,17 +61,10 @@ jobs:
 
       - name: Create Resource Group for Backend Storage
         run: |
-          az group create --name rg-tf-backend-${{ inputs.subscriptions}}-${{ matrix.region }}-001 --location ${{ matrix.region }}
-
+          az group create --name rg-tf-backend-${{ matrix.subscriptions}}-${{ matrix.region }}-001 --location ${{ matrix.region }}
       - name: Create Storage Account for Backend Storage
         run: |
-
-          az storage account create --name sttf${{ steps.subscription.outputs.substring }}${{ steps.region.outputs.substring }}001 --resource-group rg-tf-backend-${{ matrix.subscriptions}}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
-
+          az storage account create --name sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001 --resource-group rg-tf-backend-${{ matrix.subscriptions}}-${{ matrix.region }}-001 --location ${{ matrix.region }} --sku Standard_LRS
       - name: Create Blob Container for Backend Storage
         run: |
-          az storage container create --name tfstate-${{ inputs.subscriptions}}-${{ matrix.region }} --account-name sttf${{ steps.subscription.outputs.substring }}${{ steps.region.outputs.substring }}001 #--auth-mode login
-
-      # - name: Assign Storage Blob Data Contributor Role
-      #   run: |
-      #     az role assignment create --assignee  ${{ secrets.AZURE_CLIENT_ID }} --role "Storage Blob Data Contributor" --scope /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/rg-tf-backend-${{ matrix.subscriptions}}-${{ matrix.region }}-001/providers/Microsoft.Storage/storageAccounts/sttf${{ matrix.subscriptions}}${{ matrix.region }}001
+          az storage container create --name tfstate-${{ matrix.subscriptions}}-${{ matrix.region }} --account-name sttf${{ steps.env.outputs.substring }}${{ steps.region.outputs.substring }}001 #--auth-mode login
