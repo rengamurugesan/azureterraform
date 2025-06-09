@@ -1,6 +1,27 @@
 name: Platform Landing Zone for Management 
 on:
-  workflow_dispatch:
+  workflow_dispatch:      
+    inputs: 
+      subscriptions:
+        type: string
+        description: The Azure subscription ID to use for the workflow
+        required: true
+        default: '["management"]'
+      environment:
+        type: string
+        description: The environment to use for the workflow
+        required: true
+        default: 'management'
+      regions:
+        type: string
+        description: The Azure regions to use for the workflow
+        required: true
+        default: '["eastus2","centralus"]' 
+      working_directory:
+        type: string
+        description: The working directory for the Terraform configuration files'
+        required: true
+        default: './management'
   # push:
   #   branches:
   #     - master
@@ -37,7 +58,7 @@ jobs:
     with:
       regions: '["eastus2","centralus"]'
       working_directory: ./management
-      environment: manegement
+      environment: management
       subscription: '["connectivity"]'
       workload_type: management
     secrets:      

@@ -96,8 +96,7 @@ jobs:
         run: |
           terraform plan \
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
-          -var="location=${{ matrix.region }}" \
-          -var="resource_group_name=rg-tf-${{ matrix.subscription}}-${{ matrix.region }}-001" \
+          -var="location=${{ matrix.region }}" \          
           -var-file=${{ inputs.workload_type }}-${{ matrix.region }}.tfvars  \
           -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan \
           -input=false
