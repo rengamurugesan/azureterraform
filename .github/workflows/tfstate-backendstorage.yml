@@ -10,7 +10,7 @@ on:
         type: string
         description: The Azure subscription ID to use for the workflow
         required: true
-        default: '["connectivity"]'
+        default: connectivity
       environment:
         type: string
         description: The environment to use for the workflow
@@ -33,7 +33,7 @@ jobs:
       fail-fast: false
       matrix:
         region: ${{ fromjson(inputs.regions) }}
-        subscription: ${{ fromjson(inputs.subscriptions) }} 
+        subscription: ${{ inputs.subscriptions }} 
     environment:  ${{ inputs.environment }}  
 
     steps:
@@ -47,7 +47,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - run: |
-         echo ${{ matrix.subscription }} 
+         echo ${{ inputs.subscription }} 
          echo ${{ matrix.region }}
 
       - uses: bhowell2/github-substring-action@1.0.2
@@ -64,7 +64,7 @@ jobs:
 
       - name: Create Resource Group for Backend Storage
         run: |
-          az group create --name rg-tf-backend-${{ matrix.subscriptions}}-${{ matrix.region }}-001 --location ${{ matrix.region }}
+          az group create --name rg-tf-backend-${{ inputs.subscriptions}}-${{ matrix.region }}-001 --location ${{ matrix.region }}
 
       - name: Create Storage Account for Backend Storage
         run: |
@@ -73,7 +73,7 @@ jobs:
 
       - name: Create Blob Container for Backend Storage
         run: |
-          az storage container create --name tfstate-${{ matrix.subscriptions}}-${{ matrix.region }} --account-name sttf${{ steps.subscription.outputs.substring }}${{ steps.region.outputs.substring }}001 #--auth-mode login
+          az storage container create --name tfstate-${{ inputs.subscriptions}}-${{ matrix.region }} --account-name sttf${{ steps.subscription.outputs.substring }}${{ steps.region.outputs.substring }}001 #--auth-mode login
 
       # - name: Assign Storage Blob Data Contributor Role
       #   run: |
