@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@
+        
       - run: |
           echo "Validating Azure login with OIDC"
           echo "Client ID: ${{ secrets.AZURE_CLIENT_ID }}"
