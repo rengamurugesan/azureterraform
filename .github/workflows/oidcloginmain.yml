@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   validate-azure-login:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     name: Validate Azure Login with OIDC
     environment: connectivity-build
     steps:
@@ -21,14 +21,4 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
-      - uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: rengamurugesan@hotmail.com
-          minimum-approvals: 1
-          issue-title: "test"
-          issue-body: "Please approve or deny the deployment of version v1.3.5."
-          exclude-workflow-initiator-as-approver: false
-          fail-on-denial: true
-          additional-approved-words: ''
-          additional-denied-words: ''
+  
