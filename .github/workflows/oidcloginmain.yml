@@ -2,6 +2,12 @@ name: Test Azure login with OIDC
 
 on:
   workflow_dispatch:
+    inputs:
+      runs-on:
+        description: 'runner type to use for the workflow (e.g., self-hosted, ubuntu-latest)'
+        required: true
+        default: 'self-hosted'
+     
 permissions:
   contents: read
   id-token: write
