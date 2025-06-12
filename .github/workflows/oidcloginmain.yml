@@ -10,7 +10,7 @@ jobs:
   validate-azure-login:
     runs-on: self-hosted
     name: Validate Azure Login with OIDC
-    environment: connectivity
+    environment: connectivity-build
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
