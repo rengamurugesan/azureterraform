@@ -13,7 +13,12 @@ jobs:
     environment: connectivity-build
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@
+      - run: |
+          echo "Validating Azure login with OIDC"
+          echo "Client ID: ${{ secrets.AZURE_CLIENT_ID }}"
+          echo "Tenant ID: ${{ secrets.AZURE_TENANT_ID }}"
+          echo "Subscription ID: ${{ secrets.SUBSCRIPTION_ID }}"
 
       - name: Login to Azure using OIDC
         uses: azure/login@v1
