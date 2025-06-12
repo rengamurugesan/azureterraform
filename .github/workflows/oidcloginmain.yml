@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   validate-azure-login:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     name: Validate Azure Login with OIDC
     environment: connectivity-build
     steps:
