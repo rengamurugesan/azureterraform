@@ -71,7 +71,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-development.tfstate'
-            tf_vars_file: '${{ inputs.tf_vars_file }}'
+            tf_vars_file: '${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars'
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -111,7 +111,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-qa.tfstate'
-            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.region }}.tfvars \
+            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars 
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
