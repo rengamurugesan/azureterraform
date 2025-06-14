@@ -147,20 +147,13 @@ jobs:
           exit 1
 
       - name: Compress Artifact
-        run: zip -r ${{ inputs.tf_state_file}} ./*
-
-      - run: |
-          ls -la 
-        shell: bash
-        working-directory: ${{ inputs.working_directory }}
-
-      
+        run: zip -r ${{ inputs.tf_state_file}}.zip ./*
       
       - name: Upload Terraform Plan Artifact
         uses: actions/upload-artifact@v4.6.1
         with:
           name: "${{inputs.tf_state_file}}"
-          path: ${{inputs.tf_state_file}}.zip"
+          path: ${{ inputs.working_directory }}/${{inputs.tf_state_file}}.zip"
           retention-days: 2
           if-no-files-found: warn
       
