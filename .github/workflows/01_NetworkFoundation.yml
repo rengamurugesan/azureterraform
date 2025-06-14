@@ -26,7 +26,7 @@ on:
         type: string
         description: The Azure workload type like connectivity,management, dev,qa,uat,prod
         required: true
-        default: 'connectvitiy'
+        default: 'connectivity'
       tf_backend_storage_account:
         type: string
         description: The Azure Storage Account to use for the Terraform backend'
@@ -51,7 +51,7 @@ on:
         type: string
         description: The Terraform variables file to use for the workflow'
         required: true
-        default: 'connectivity.tfvars'
+        default: 'connectivity-eastus2.tfvars'
 
 jobs:
     Plan_Devlopment:
@@ -89,7 +89,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-development.tfstate'
-            tf_vars_file: 'connectivity.tfvars'  
+            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -129,7 +129,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-qa.tfstate'
-            tf_vars_file: 'connectivity.tfvars'  
+            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars 
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
