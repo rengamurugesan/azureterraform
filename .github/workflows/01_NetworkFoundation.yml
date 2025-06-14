@@ -53,6 +53,7 @@ on:
         required: true
         default: 'connectivity-eastus2.tfvars'
 
+
 jobs:
     Plan_Devlopment:
         permissions:
@@ -95,6 +96,7 @@ jobs:
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-development.tfstate'
             tf_vars_file: ${{ inputs.workload_type }}-dev-${{ inputs.regions }}.tfvars
+            
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
