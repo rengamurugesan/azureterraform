@@ -93,7 +93,7 @@ jobs:
       - name: download Artifact
         uses: actions/download-artifact@v4.1.8
         with:
-          name: "${{inputs.tf_state_file}}"
+          name: "${{inputs.tf_state_file}}.zip"
           path: ${{inputs.working_directory}}
       - name: Decompress Artifact
         run: unzip -o ${{inputs.working_directory}}/${{inputs.tf_state_file}}.zip 
