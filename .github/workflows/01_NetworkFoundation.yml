@@ -63,8 +63,8 @@ jobs:
         uses: ./.github/workflows/tfplan.yml
         with:
             working_directory: './connectivity'
-            subscription: 'connectivity'
-            regions: 'eastus2,centralus'
+            subscription: 'connectivity'    
+            regions: ${{ inputs.regions }}
             environment: 'connectivity-build'
             workload_type: 'connectivity'
             tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
@@ -82,7 +82,7 @@ jobs:
         with:
             working_directory: './connectivity'
             subscription: 'connectivity'
-            regions: 'eastus2,centralus'
+            regions: ${{ inputs.regions }}
             environment: 'connectivity-build'
             workload_type: 'connectivity'
             tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
@@ -104,7 +104,7 @@ jobs:
         with:
             working_directory: './connectivity'
             subscription: 'connectivity'
-            regions: 'eastus2,centralus'
+            regions: ${{ inputs.regions }}
             environment: 'connectivity-build'
             workload_type: 'connectivity'
             tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
@@ -122,7 +122,7 @@ jobs:
         with:
             working_directory: './connectivity'
             subscription: 'connectivity'
-            regions: 'eastus2,centralus'
+            regions: ${{ inputs.regions }}
             environment: 'connectivity-build'
             workload_type: 'connectivity'
             tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}

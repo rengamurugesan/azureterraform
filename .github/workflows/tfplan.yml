@@ -21,7 +21,7 @@ on:
         type: string
         description: The Azure regions to use for the workflow'
         required: true
-        default: 'eastus2,centralus' 
+        default: 'eastus2' 
       environment:
         type: string
         description: The environment to use for the workflow'
