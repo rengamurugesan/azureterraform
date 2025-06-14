@@ -1,0 +1,160 @@
+name: Terraform Plan Workflow
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        type: string
+        description: The working directory for the Terraform configuration files'
+        required: true
+        default: './connectivity'
+      tf_verion:
+        type: string
+        description: The Terraform version to use for the workflow'
+        required: false
+        default: '1.5.7'
+      subscription:
+        type: string
+        description: The Azure subscription ID to use for the workflow'
+        required: true
+        default: 'connectivity'
+      regions:
+        type: string
+        description: The Azure regions to use for the workflow'
+        required: true
+        default: 'eastus2,centralus' 
+      environment:
+        type: string
+        description: The environment to use for the workflow'
+        required: true
+        default: 'connectivity-build'
+      tf_backend_storage_account:
+        type: string
+        description: The Azure Storage Account to use for the Terraform backend'
+        required: true
+        default: 'sttfconnectivityeastus2001'
+      tf_backend_resource_group:
+        type: string
+        description: The Azure Resource Group to use for the Terraform backend'
+        required: true
+        default: 'rg-tf-backend-connectivity-eastus2-001'
+      tf_backend_container:
+        type: string
+        description: The Azure Storage Container to use for the Terraform backend'
+        required: true
+        default: 'tfstate-connectivity-eastus2'
+      tf_state_file:
+        type: string
+        description: The Terraform state file to use for the workflow'
+        required: true
+        default: 'terraform.tfstate'
+      tf_vars_file:
+        type: string
+        description: The Terraform variables file to use for the workflow'
+        required: true
+        default: 'connectivity.tfvars'
+      workload_type:
+        type: string
+        description: The Azure workload type like connectivity,management, dev,qa,uat,prod
+        required: true
+        default: 'connectvitiy'
+    secrets:
+      AZURE_CLIENT_ID:
+        description: 'Azure Client ID for OIDC authentication'
+        required: true
+      AZURE_TENANT_ID:
+        description: 'Azure Tenant ID for OIDC authentication'
+        required: true
+      SUBSCRIPTION_ID:
+        description: 'Azure Subscription ID for the workflow'
+        required: true
+        
+jobs:
+  terraform-plan: 
+    name: Terraform Plan for  
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }} 
+    strategy:
+      fail-fast: false
+      matrix:
+        region: ${{ fromjson(inputs.regions) }}
+        subscription: ${{ fromjson(inputs.subscription) }}    
+    defaults:
+      run: 
+        working-directory: ${{ inputs.working_directory }}
+        shell: bash
+    env:
+      working_directory: ${{ inputs.working_directory }}
+      tf_version: ${{ inputs.tf_verion }}
+      tf_state_file: ${{ inputs.tf_state_file }}
+      tf_vars_file: ${{ inputs.tf_vars_file }}
+      workload_type: ${{ inputs.workload_type }} 
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Login to Azure using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+    
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format Check
+        id: terraform-fmt
+        run: terraform fmt -check
+        working-directory: ${{ inputs.working_directory }}
+        continue-on-error: true
+
+ 
+      - name: Initialize Terraform
+        id: terraform-init
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform init -reconfigure \
+          -input=false  \
+          -backend-config="storage_account_name=${{ inputs.tf_backend_storage_account }}" \
+          -backend-config="resource_group_name=${{ inputs.tf_backend_resource_group }}" \
+          -backend-config="container_name=${{ inputs.tf_backend_container }}" \
+          -backend-config="key=${{ inputs.tf_state_file }}"
+      
+      - name: Terraform Validate
+        id: terraform-validate
+        run: terraform validate
+        working-directory: ${{ inputs.working_directory }}
+        continue-on-error: true
+      
+      - name: Terraform Plan
+        id: terraform-plan
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform plan  \
+          -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
+          -var-file=${{ inputs.tf_vars_file }} \
+          -var="location=${{ matrix.region }}"  \
+          -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan  \
+          -input=false
+        
+      - name: Terraform Plan Status
+        id: terraform-show  
+        if: ${{ steps.terraform-plan.outcome == 'failure' }}
+        run: |
+          echo "Terraform Plan failed. Please check the logs for details."
+          exit 1
+
+      - name: Compress Artifact
+        run: zip -r ${{ inputs.tf_state_file}} ./*
+      
+      
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v4.6.1
+        with:
+          name: "${{inputs.tf_state_file}}"
+          path: ${{inputs.working_directory}}/${{inputs.tf_state_file}}.zip"
+          retention-days: 2
+          if-no-files-found: warn
+    

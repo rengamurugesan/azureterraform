@@ -1,0 +1,135 @@
+name: Terraform Apply Workflow
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        type: string
+        description: The working directory for the Terraform configuration files'
+        required: true
+        default: './connectivity'
+      tf_verion:
+        type: string
+        description: The Terraform version to use for the workflow'
+        required: false
+        default: '1.5.7'
+      subscription:
+        type: string
+        description: The Azure subscription ID to use for the workflow'
+        required: true
+        default: 'connectivity'
+      regions:
+        type: string
+        description: The Azure regions to use for the workflow'
+        required: true
+        default: 'eastus2,centralus' 
+      environment:
+        type: string
+        description: The environment to use for the workflow'
+        required: true
+        default: 'connectivity-build'
+      tf_backend_storage_account:
+        type: string
+        description: The Azure Storage Account to use for the Terraform backend'
+        required: true
+        default: 'sttfconnectivityeastus2001'
+      tf_backend_resource_group:
+        type: string
+        description: The Azure Resource Group to use for the Terraform backend'
+        required: true
+        default: 'rg-tf-backend-connectivity-eastus2-001'
+      tf_backend_container:
+        type: string
+        description: The Azure Storage Container to use for the Terraform backend'
+        required: true
+        default: 'tfstate-connectivity-eastus2'
+      tf_state_file:
+        type: string
+        description: The Terraform state file to use for the workflow'
+        required: true
+        default: 'terraform.tfstate'
+      tf_vars_file:
+        type: string
+        description: The Terraform variables file to use for the workflow'
+        required: true
+        default: 'connectivity.tfvars'
+      workload_type:
+        type: string
+        description: The Azure workload type like connectivity,management, dev,qa,uat,prod
+        required: true
+        default: 'connectvitiy'
+    secrets:
+      AZURE_CLIENT_ID:
+        description: 'Azure Client ID for OIDC authentication'
+        required: true
+      AZURE_TENANT_ID:
+        description: 'Azure Tenant ID for OIDC authentication'
+        required: true
+      SUBSCRIPTION_ID:
+        description: 'Azure Subscription ID for the workflow'
+        required: true
+        
+jobs:
+  terraform-plan: 
+    name: Terraform Plan for  
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }} 
+    strategy:
+      fail-fast: false
+      matrix:
+        region: ${{ fromjson(inputs.regions) }}
+        subscription: ${{ fromjson(inputs.subscription) }}    
+    defaults:
+      run: 
+        working-directory: ${{ inputs.working_directory }}
+        shell: bash
+    env:
+      working_directory: ${{ inputs.working_directory }}
+      tf_version: ${{ inputs.tf_verion }}
+      tf_state_file: ${{ inputs.tf_state_file }}
+      tf_vars_file: ${{ inputs.tf_vars_file }}
+      workload_type: ${{ inputs.workload_type }} 
+
+    steps:
+      - name: download Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: "${{inputs.tf_state_file}}"
+          path: ${{inputs.working_directory}}
+      - name: Decompress Artifact
+        run: unzip -o ${{inputs.working_directory}}/${{inputs.tf_state_file}}.zip 
+
+      - name: setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ inputs.tf_verion }}
+
+      - name: Login to Azure using OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+    
+      - name: Initialize Terraform
+        id: terraform-init
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform init -reconfigure \
+          -input=false  \
+          -backend-config="storage_account_name=${{ inputs.tf_backend_storage_account }}" \
+          -backend-config="resource_group_name=${{ inputs.tf_backend_resource_group }}" \
+          -backend-config="container_name=${{ inputs.tf_backend_container }}" \
+          -backend-config="key=${{ inputs.tf_state_file }}"
+
+      - name: Terraform Apply
+        id: terraform-apply
+        run: |
+          terraform apply -auto-approve \
+          -var-file=${{ inputs.tf_vars_file }} \
+          -state=${{ inputs.tf_state_file }} \
+          -input=false \
+          -no-color
+          -auto-approve
+        working-directory: ${{ inputs.working_directory }}
+      
+      

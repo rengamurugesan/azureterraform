@@ -1,0 +1,138 @@
+name: 01-NetworkFoundation
+on:
+  workflow_dispatch:
+    inputs: 
+      subscriptions:
+        type: string
+        description: The Azure subscription ID to use for the workflow
+        required: true
+        default: '["connectivity"]'
+      environment:
+        type: string
+        description: The environment to use for the workflow
+        required: true
+        default: 'connectivity-build'
+      regions:
+        type: string
+        description: The Azure regions to use for the workflow
+        required: true
+        default: '["eastus2","centralus"]'
+      working_directory:
+        type: string
+        description: The working directory for the Terraform configuration files'
+        required: true
+        default: './connectivity'
+      workload_type:
+        type: string
+        description: The Azure workload type like connectivity,management, dev,qa,uat,prod
+        required: true
+        default: 'connectvitiy'
+      tf_backend_storage_account:
+        type: string
+        description: The Azure Storage Account to use for the Terraform backend'
+        required: true
+        default: 'sttfconnectivityeastus2001'
+      tf_backend_resource_group:
+        type: string
+        description: The Azure Resource Group to use for the Terraform backend'
+        required: true
+        default: 'rg-tf-backend-connectivity-eastus2-001'
+      tf_backend_container: 
+        type: string
+        description: The Azure Storage Container to use for the Terraform backend'
+        required: true
+        default: 'tfstate-connectivity-eastus2'
+      tf_state_file:
+        type: string
+        description: The Terraform state file to use for the workflow'
+        required: true
+        default: 'terraform.tfstate'
+      tf_vars_file:
+        type: string
+        description: The Terraform variables file to use for the workflow'
+        required: true
+        default: 'connectivity.tfvars'
+
+jobs:
+    Plan_Devlopment:
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+            security-events: write
+        uses: ./.github/workflows/tfplan.yml
+        with:
+            working_directory: './connectivity'
+            subscription: 'connectivity'
+            regions: 'eastus2,centralus'
+            environment: 'connectivity-build'
+            workload_type: 'connectivity'
+            tf_backend_storage_account: 'sttfconnectivityeastus2001'
+            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
+            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_state_file: 'terraform.tfstate'
+            tf_vars_file: 'connectivity.tfvars'  
+        secrets:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+    Apply_Devlopment:
+        uses: ./.github/workflows/tfapply.yml
+        needs: Plan_Devlopment
+        with:
+            working_directory: './connectivity'
+            subscription: 'connectivity'
+            regions: 'eastus2,centralus'
+            environment: 'connectivity-build'
+            workload_type: 'connectivity'
+            tf_backend_storage_account: 'sttfconnectivityeastus2001'
+            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
+            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_state_file: 'terraform.tfstate'
+            tf_vars_file: 'connectivity.tfvars'  
+        secrets:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+    Plan_QA:
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+            security-events: write            
+        uses: ./.github/workflows/tfplan.yml
+        with:
+            working_directory: './connectivity'
+            subscription: 'connectivity'
+            regions: 'eastus2,centralus'
+            environment: 'connectivity-build'
+            workload_type: 'connectivity'
+            tf_backend_storage_account: 'sttfconnectivityeastus2001'
+            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
+            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_state_file: 'terraform.tfstate'
+            tf_vars_file: 'connectivity.tfvars'  
+        secrets:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+    Apply_QA:
+        needs: [Plan_QA, Apply_Devlopment]  
+        uses: ./.github/workflows/tfapply.yml              
+        with:
+            working_directory: './connectivity'
+            subscription: 'connectivity'
+            regions: 'eastus2,centralus'
+            environment: 'connectivity-build'
+            workload_type: 'connectivity'
+            tf_backend_storage_account: 'sttfconnectivityeastus2001'
+            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
+            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_state_file: 'terraform.tfstate'
+            tf_vars_file: 'connectivity.tfvars'  
+        secrets:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+    
+      
