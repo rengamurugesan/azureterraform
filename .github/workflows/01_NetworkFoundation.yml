@@ -16,7 +16,7 @@ on:
         type: string
         description: The Azure regions to use for the workflow
         required: true
-        default: '["eastus2","centralus"]'
+        default: eastus2 # '["eastus2","centralus"]'
       working_directory:
         type: string
         description: The working directory for the Terraform configuration files'
@@ -67,11 +67,11 @@ jobs:
             regions: 'eastus2,centralus'
             environment: 'connectivity-build'
             workload_type: 'connectivity'
-            tf_backend_storage_account: 'sttfconneastus001'
-            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
-            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
+            tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
+            tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-development.tfstate'
-            tf_vars_file: 'connectivity.tfvars'  
+            tf_vars_file: '${{ inputs.tf_vars_file }}'
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -85,9 +85,9 @@ jobs:
             regions: 'eastus2,centralus'
             environment: 'connectivity-build'
             workload_type: 'connectivity'
-            tf_backend_storage_account: 'sttfconneastus001'
-            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
-            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
+            tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
+            tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-development.tfstate'
             tf_vars_file: 'connectivity.tfvars'  
         secrets:
@@ -107,11 +107,11 @@ jobs:
             regions: 'eastus2,centralus'
             environment: 'connectivity-build'
             workload_type: 'connectivity'
-            tf_backend_storage_account: 'sttfconneastus001'
-            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
-            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
+            tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
+            tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-qa.tfstate'
-            tf_vars_file: 'connectivity.tfvars'  
+            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.region }}.tfvars \
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -125,9 +125,9 @@ jobs:
             regions: 'eastus2,centralus'
             environment: 'connectivity-build'
             workload_type: 'connectivity'
-            tf_backend_storage_account: 'sttfconneastus001'
-            tf_backend_resource_group: 'rg-tf-backend-connectivity-eastus2-001'
-            tf_backend_container: 'tfstate-connectivity-eastus2'
+            tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
+            tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
+            tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-qa.tfstate'
             tf_vars_file: 'connectivity.tfvars'  
         secrets:
