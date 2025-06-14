@@ -73,11 +73,11 @@ jobs:
     name: Terraform Plan for  
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }} 
-    strategy:
-      fail-fast: false
-      matrix:
-        region: ${{ fromjson(inputs.regions) }}
-        subscription: ${{ fromjson(inputs.subscription) }}    
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     region: ${{ fromjson(inputs.regions) }}
+    #     subscription: ${{ fromjson(inputs.subscription) }}    
     defaults:
       run: 
         working-directory: ${{ inputs.working_directory }}
