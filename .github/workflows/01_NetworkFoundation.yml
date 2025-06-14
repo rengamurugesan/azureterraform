@@ -26,12 +26,7 @@ on:
         type: string
         description: The Azure workload type like connectivity,management, dev,qa,uat,prod
         required: true
-        default: 'connectivity'
-      workload_environment:
-        type: string
-        description: The Azure workload environment like dev,qa,uat,prod
-        required: true
-        default: 'dev'
+        default: 'connectivity' 
       tf_backend_storage_account:
         type: string
         description: The Azure Storage Account to use for the Terraform backend'
