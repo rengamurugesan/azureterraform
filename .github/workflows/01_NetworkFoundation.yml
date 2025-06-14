@@ -77,6 +77,11 @@ jobs:
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
             SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
     Apply_Devlopment:
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+            security-events: write
         uses: ./.github/workflows/tfapply.yml
         needs: Plan_Devlopment
         with:
