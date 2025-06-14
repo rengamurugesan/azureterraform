@@ -135,8 +135,8 @@ jobs:
           terraform plan  \
           -var="connectivity_subscription=${{ secrets.SUBSCRIPTION_ID }}" \
           -var-file=${{ inputs.tf_vars_file }} \
-          -var="location=${{ matrix.region }}"  \
-          -out=tfplan-${{ matrix.subscription}}-${{ matrix.region }}-${{ github.run_id }}.tfplan  \
+          -var="location=${{ inputs.regions }}"  \
+          -out=tfplan-${{inputs.environment}}.tfplan  \
           -input=false
         
       - name: Terraform Plan Status
