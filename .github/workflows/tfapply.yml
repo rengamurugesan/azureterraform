@@ -27,6 +27,11 @@ on:
         description: The environment to use for the workflow'
         required: true
         default: 'connectivity-build'
+      workload_environment:
+        type: string
+        description: The Azure workload environment like dev,qa,uat,prod
+        required: true
+        default: 'dev'
       tf_backend_storage_account:
         type: string
         description: The Azure Storage Account to use for the Terraform backend'

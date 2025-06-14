@@ -27,6 +27,11 @@ on:
         description: The Azure workload type like connectivity,management, dev,qa,uat,prod
         required: true
         default: 'connectivity'
+      workload_environment:
+        type: string
+        description: The Azure workload environment like dev,qa,uat,prod
+        required: true
+        default: 'dev'
       tf_backend_storage_account:
         type: string
         description: The Azure Storage Account to use for the Terraform backend'
@@ -71,7 +76,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-development.tfstate'
-            tf_vars_file: '${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars'
+            tf_vars_file: '${{ inputs.workload_type }}-dev-${{ inputs.regions }}.tfvars'
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -89,7 +94,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-development.tfstate'
-            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars
+            tf_vars_file: ${{ inputs.workload_type }}-dev-${{ inputs.regions }}.tfvars
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -111,7 +116,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-qa.tfstate'
-            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars 
+            tf_vars_file: ${{ inputs.workload_type }}-qa-${{ inputs.regions }}.tfvars 
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -129,7 +134,7 @@ jobs:
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
             tf_backend_container: ${{ inputs.tf_backend_container }}
             tf_state_file: 'foundation-qa.tfstate'
-            tf_vars_file: ${{ inputs.workload_type }}-${{ inputs.regions }}.tfvars 
+            tf_vars_file: ${{ inputs.workload_type }}-qa-${{ inputs.regions }}.tfvars 
         secrets:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
