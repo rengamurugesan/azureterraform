@@ -22,6 +22,8 @@ jobs:
       issues: write
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
       - name: Await Manual Approval
         uses: trstringer/manual-approval@v1
         with:
@@ -30,3 +32,4 @@ jobs:
           minimum-approvals: 1
           issue-title: "Manual Approval Required for Terraform Apply"
           issue-body: "Please approve or deny the deployment."
+          fail-on-denial: true
