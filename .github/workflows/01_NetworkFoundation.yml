@@ -89,7 +89,7 @@ jobs:
             working_directory: './connectivity'
             subscription: 'connectivity'
             regions: ${{ inputs.regions }}
-            environment: 'connectivity-deploy'
+            environment:  'connectivity-build'
             workload_type: 'connectivity'
             tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
             tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
