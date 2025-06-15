@@ -70,7 +70,7 @@ on:
         
 jobs:
   terraform-plan: 
-    name: Terraform Plan for  
+    name: Terraform Plan for the ${{ inputs.environment }} environment  
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }} 
     # strategy:
