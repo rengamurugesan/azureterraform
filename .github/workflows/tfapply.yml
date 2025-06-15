@@ -112,8 +112,10 @@ jobs:
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - run:
-          ls -la ${{ inputs.working_directory }}
+          ls -la 
+        working-directory: ${{ inputs.working_directory }}
         shell: bash
+        
       - name: Initialize Terraform
         id: terraform-init
         working-directory: ${{ inputs.working_directory }}
