@@ -246,6 +246,8 @@ jobs:
             actions: read
             security-events: write    
         uses: ./.github/workflows/manualapproval.yml
+        with:
+           working_directory: './connectivity'
         
     
     Apply_Production:

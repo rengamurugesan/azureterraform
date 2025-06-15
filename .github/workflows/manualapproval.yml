@@ -1,10 +1,13 @@
 name: Manual Approval Workflow
 
 on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - master
+  workflow_call:
+   inputs:
+      working_directory:
+        type: string
+        description: The working directory for the Terraform configuration files'
+        required: true
+        default: './connectivity'
 
 permissions:
     contents: read
