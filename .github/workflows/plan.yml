@@ -37,6 +37,11 @@ on:
         description: 'Azure Subscription ID for the workflow'
         required: true
         
+permissions:
+    contents: read
+    id-token: write
+    actions: read
+    security-events: write  
 jobs:
   terraform-plan: 
     name: Terraform Plan for  

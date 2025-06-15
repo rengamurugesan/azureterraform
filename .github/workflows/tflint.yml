@@ -6,6 +6,11 @@ on:
         description: The working directory for the Terraform configuration files'
         required: true
         default: './connectivity'
+permissions:
+    contents: read
+    id-token: write
+    actions: read
+    security-events: write  
 jobs:
   terraform-unit-tests:
     name: Terraform Unit Tests
@@ -56,7 +61,8 @@ jobs:
         with:
           tfsec_args: --soft-fail
           github_token: ${{ github.token }}
-          tfsec_formats: sarif,csv
+          tfsec_formats: csv
+
       - name: Checkov GitHub Action
         uses: bridgecrewio/checkov-action@v12
         with:
