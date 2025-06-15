@@ -136,9 +136,8 @@ jobs:
       - name: Terraform Apply
         id: terraform-apply
         run: |
-          terraform apply -auto-approve \
-          tfplan-${{inputs.environment}}.tfplan \
-          -var-file=${{ inputs.tf_vars_file }} 
+          terraform apply tfplan-${{inputs.environment}}.tfplan -var-file=${{ inputs.tf_vars_file }} -auto-approve          
+          
           
         
       
