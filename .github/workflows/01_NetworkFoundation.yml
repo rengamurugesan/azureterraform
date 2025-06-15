@@ -248,7 +248,7 @@ jobs:
     
     Apply_Production:
         name: Terraform Apply for Production
-        needs: [Plan_Production, Apply_UAT, Manual_Approval]
+        needs: [Plan_Production, Manual_Approval]
         permissions:
             contents: read
             id-token: write
