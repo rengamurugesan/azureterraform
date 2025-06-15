@@ -1,14 +1,17 @@
-config {
-#Enables module inspection
-module = true
-force = false
+
+plugin "terraform" {
+  enabled = true
+  preset  = "recommended"
 }
 
-plugin "azurerm" {
-    enabled = true
-    version = "0.25.1"
-    source  = "github.com/terraform-linters/tflint-ruleset-azurerm"
+config {
+  call_module_type = "all"
 }
+
+rule "terraform_required_version" {
+  enabled = false
+}
+
 
 # Disallow deprecated (0.11-style) interpolation
 rule "terraform_deprecated_interpolation" {
@@ -82,18 +85,5 @@ format = "none"
 
 }
 
-# Disallow terraform declarations without require_version.
-rule "azurerm_linux_virtual_machine_invalid_size" {
-enabled = true
-}
 
 
-# Ensure that a module complies with the Terraform Standard Module Structure
-rule "terraform_standard_module_structure" {
-enabled = true
-}
-
-# terraform.workspace should not be used with a "remote" backend with remote execution.
-rule "terraform_workspace_remote" {
-enabled = true
-}
