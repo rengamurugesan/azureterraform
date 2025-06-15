@@ -53,7 +53,13 @@ on:
         required: true
         default: 'connectivity-eastus2.tfvars'
 
-
+        
+permissions:
+    contents: read
+    id-token: write
+    actions: read
+    security-events: write
+    
 jobs:
     Terraform-lint:
         name: Terraform unit test        

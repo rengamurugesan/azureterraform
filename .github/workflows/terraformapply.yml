@@ -5,7 +5,9 @@ on:
     types:
       - completed
   workflow_dispatch: {}
-
+        
+permissions: read-all
+   
 jobs:
   terraform-deploy:
     runs-on: ubuntu-latest
