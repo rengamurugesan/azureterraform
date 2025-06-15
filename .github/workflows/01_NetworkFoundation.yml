@@ -244,6 +244,7 @@ jobs:
             contents: read
             id-token: write
             actions: read
+            issues: write
             security-events: write    
         uses: ./.github/workflows/manualapproval.yml
         with:
