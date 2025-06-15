@@ -11,7 +11,7 @@ on:
         type: string
         description: The Terraform version to use for the workflow'
         required: false
-        default: '1.9.3'
+        default: '1.12.2'
       subscription:
         type: string
         description: The Azure subscription ID to use for the workflow'
@@ -114,10 +114,6 @@ jobs:
       #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
       #     subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
-      - run:
-          ls -la 
-        working-directory: ${{ inputs.working_directory }}
-        shell: bash
 
       - name: Initialize Terraform
         id: terraform-init
