@@ -122,6 +122,10 @@ jobs:
           -backend-config="resource_group_name=${{ inputs.tf_backend_resource_group }}" \
           -backend-config="container_name=${{ inputs.tf_backend_container }}" \
           -backend-config="key=${{ inputs.tf_state_file }}"
+        env:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
     
 
 
