@@ -123,9 +123,11 @@ jobs:
           -backend-config="container_name=${{ inputs.tf_backend_container }}" \
           -backend-config="key=${{ inputs.tf_state_file }}"
         env:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+          ARM_USE_OIDC: true
+
     
 
 
