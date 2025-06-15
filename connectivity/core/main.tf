@@ -10,9 +10,12 @@ resource "azurerm_storage_account" "this" {
   # Removed unsupported attribute enable_https_traffic_only
   is_hns_enabled = var.is_hns_enabled
 
+  min_tls_version = "TLS1_2" # Default value, can be overridden by variable
+
   large_file_share_enabled = var.large_file_share_enabled
   # Removed unsupported attribute minimum_tls_version
   allow_nested_items_to_be_public = var.allow_nested_items_to_be_public
+  public_network_access_enabled   = false
 
   dynamic "network_rules" {
     for_each = var.network_rules

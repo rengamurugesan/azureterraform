@@ -55,14 +55,16 @@ jobs:
       - name: Run TFLint
         working-directory: ${{ inputs.working_directory }}
         run: tflint  --minimum-failure-severity warning -f compact
-    
-      - name: tfsec        
-        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+      
+      - name: Run Terrascan
+        id: terrascan
+        uses: tenable/terrascan-action@main
         with:
-          tfsec_args: --soft-fail
-          github_token: ${{ github.token }}
-          tfsec_formats: csv
-
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'azure'
+          only_warn: true
+  
       - name: Checkov GitHub Action
         uses: bridgecrewio/checkov-action@v12
         with:          
