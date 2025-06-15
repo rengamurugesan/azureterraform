@@ -136,13 +136,10 @@ jobs:
       - name: Terraform Apply
         id: terraform-apply
         run: |
-          terraform apply \
+          terraform apply -auto-approve \
           tfplan-${{inputs.environment}}.tfplan \
-          -auto-approve \
-          -input=false \          
-          -var-file=${{ inputs.tf_vars_file }} \
-          -no-color
+          -var-file=${{ inputs.tf_vars_file }} 
           
-        working-directory: ${{ inputs.working_directory }}
+        
       
       
