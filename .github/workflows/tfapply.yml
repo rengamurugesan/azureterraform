@@ -111,7 +111,9 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
-      
+      - run:
+          ls -la ${{ inputs.working_directory }}
+        shell: bash
       - name: Initialize Terraform
         id: terraform-init
         working-directory: ${{ inputs.working_directory }}
