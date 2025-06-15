@@ -136,7 +136,7 @@ jobs:
       - name: Terraform Apply
         id: terraform-apply
         run: |
-          terraform apply  -var-file=${{ inputs.tf_vars_file }} tfplan-${{inputs.environment}}.tfplan 
+          terraform apply tfplan-${{inputs.environment}}.tfplan 
       # - name: Terraform Apply
       #   working-directory:  ${{ inputs.working_directory }}
       #   run: |          
