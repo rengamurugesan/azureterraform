@@ -245,11 +245,8 @@ jobs:
             id-token: write
             actions: read
             security-events: write    
-        uses: ./.github/workflows/tfplan.yml
+        uses: ./.github/workflows/manualapproval.yml
         
-     
-              
-          
     
     Apply_Production:
         name: Terraform Apply for Production
