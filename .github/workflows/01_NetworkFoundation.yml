@@ -238,17 +238,22 @@ jobs:
             SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
 
     Manual_Approval:
-        name: Manual Approval for Production
-        runs-on: ubuntu-latest
+        name: Manual Approval for Production        
         needs:  [Plan_Production, Apply_UAT]
-        steps:
-            - name: Wait for manual approval
-              uses: ./.github/workflows/manualapproval.yml 
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+            security-events: write    
+        uses: ./.github/workflows/tfplan.yml
+        
+     
+              
           
     
     Apply_Production:
         name: Terraform Apply for Production
-        needs: [Plan_Production, Manual_Approval]
+        needs: [ Manual_Approval]
         permissions:
             contents: read
             id-token: write
