@@ -125,12 +125,7 @@ jobs:
           -backend-config="storage_account_name=${{ inputs.tf_backend_storage_account }}" \
           -backend-config="resource_group_name=${{ inputs.tf_backend_resource_group }}" \
           -backend-config="container_name=${{ inputs.tf_backend_container }}" \
-          -backend-config="key=${{ inputs.tf_state_file }}"
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
-          ARM_USE_OIDC: true
+          -backend-config="key=${{ inputs.tf_state_file }}"   
 
     
 
