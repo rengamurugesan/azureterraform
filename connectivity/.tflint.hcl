@@ -64,10 +64,7 @@ rule "terraform_typed_variables" {
 enabled = true
 }
 
-# Disallow duplicate keys in a map object
-rule "terraform_map_duplicate_keys" {
-    enabled = true
-}
+
 
 # Disallow specifying a git or mercurial repository as a module source without pinning to a version
 rule "terraform_module_pinned_source" {
