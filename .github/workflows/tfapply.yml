@@ -112,7 +112,7 @@ jobs:
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - run: |
           az account show --subscription ${{ secrets.SUBSCRIPTION_ID }} \
-    
+      
       - name: Initialize Terraform
         id: terraform-init
         working-directory: ${{ inputs.working_directory }}
@@ -123,6 +123,8 @@ jobs:
           -backend-config="resource_group_name=${{ inputs.tf_backend_resource_group }}" \
           -backend-config="container_name=${{ inputs.tf_backend_container }}" \
           -backend-config="key=${{ inputs.tf_state_file }}"
+    
+
 
       - name: Terraform Apply
         id: terraform-apply
