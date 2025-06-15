@@ -55,12 +55,24 @@ on:
 
 
 jobs:
+    Terraform-lint:
+        name: Terraform unit test        
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+            security-events: write
+        uses: ./.github/workflows/tflint.yml
+        with:
+            working_directory: './connectivity'
+                   
     Plan_Devlopment:
         permissions:
             contents: read
             id-token: write
             actions: read
             security-events: write
+        needs: Terraform-lint
         uses: ./.github/workflows/tfplan.yml
         with:
             working_directory: './connectivity'
@@ -102,6 +114,7 @@ jobs:
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
             SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
     Plan_QA:
+        needs: Terraform-lint
         permissions:
             contents: read
             id-token: write
