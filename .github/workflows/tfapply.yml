@@ -111,7 +111,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
       - run: |
-          az account shwow --subscription ${{ secrets.SUBSCRIPTION_ID }} \
+          az account show --subscription ${{ secrets.SUBSCRIPTION_ID }} \
     
       - name: Initialize Terraform
         id: terraform-init
