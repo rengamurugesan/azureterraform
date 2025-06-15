@@ -1,3 +1,4 @@
+name: Terraform Apply Workflow
 on:
   workflow_call:
     inputs:
@@ -42,7 +43,7 @@ permissions:
     id-token: write
     actions: read
     security-events: write
-           
+
 jobs:
   terraform-apply: 
     name: Terraform Plan for 

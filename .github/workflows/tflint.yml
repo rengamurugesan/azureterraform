@@ -1,3 +1,4 @@
+name: Terraform Linting and Unit Tests
 on:
   workflow_call:
     inputs:
