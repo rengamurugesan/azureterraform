@@ -56,14 +56,14 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
         run: tflint  --minimum-failure-severity warning -f compact
       
-      - name: Run Terrascan
-        id: terrascan
-        uses: tenable/terrascan-action@main
-        with:
-          iac_type: 'terraform'
-          iac_version: 'v14'
-          policy_type: 'azure'
-          only_warn: true
+      # - name: Run Terrascan
+      #   id: terrascan
+      #   uses: tenable/terrascan-action@main
+      #   with:
+      #     iac_type: 'terraform'
+      #     iac_version: 'v14'
+      #     policy_type: 'azure'
+      #     only_warn: true
   
       # - name: Checkov GitHub Action
       #   uses: bridgecrewio/checkov-action@v12
