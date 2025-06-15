@@ -206,5 +206,54 @@ jobs:
             AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
             SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+    Plan_Production:
+        name: Terraform Plan for Production
+        needs: Terraform-lint
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+            security-events: write            
+        uses: ./.github/workflows/tfplan.yml
+        with:
+            working_directory: './connectivity'
+            subscription: 'connectivity'
+            regions: ${{ inputs.regions }}
+            environment: 'connectivity-build'
+            workload_type: 'connectivity'
+            tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
+            tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
+            tf_backend_container: ${{ inputs.tf_backend_container }}
+            tf_state_file: 'foundation-prod.tfstate'
+            tf_vars_file: ${{ inputs.workload_type }}-prod-${{ inputs.regions }}.tfvars 
+        secrets:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+    Apply_Production:
+        name: Terraform Apply for Production
+        needs: [Plan_Production, Apply_UAT]
+        permissions:
+            contents: read
+            id-token: write
+            actions: read
+            security-events: write  
+        uses: ./.github/workflows/tfapply.yml              
+        with:
+            working_directory: './connectivity'
+            subscription: 'connectivity'
+            regions: ${{ inputs.regions }}
+            environment: 'connectivity-build'
+            workload_type: 'connectivity'
+            tf_backend_storage_account: ${{ inputs.tf_backend_storage_account }}
+            tf_backend_resource_group: ${{ inputs.tf_backend_resource_group }}
+            tf_backend_container: ${{ inputs.tf_backend_container }}
+            tf_state_file: 'foundation-prod.tfstate'
+            tf_vars_file: ${{ inputs.workload_type }}-prod-${{ inputs.regions }}.tfvars 
+        secrets:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+
     
       
