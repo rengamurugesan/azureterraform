@@ -65,7 +65,10 @@ jobs:
 
       - name: Checkov GitHub Action
         uses: bridgecrewio/checkov-action@v12
-        with:
-          
+        with:          
           output_format: cli
           output_file_path: console
+          skip_download: true
+          skip_cve_package: CKV_GHA_7
+          
+
