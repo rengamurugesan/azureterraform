@@ -1,3 +1,8 @@
+plugin "azurerm" {
+    enabled = true
+    version = "0.28.0"
+    source  = "github.com/terraform-linters/tflint-ruleset-azurerm"
+}
 
 plugin "terraform" {
   enabled = true
@@ -12,6 +17,8 @@ rule "terraform_required_version" {
   enabled = false
 }
 
+# Disallow variables, data sources, and locals that are declared but never used
+rule "terraform_unused_declarations" { enabled = true }
 
 # Disallow deprecated (0.11-style) interpolation
 rule "terraform_deprecated_interpolation" {
@@ -21,6 +28,15 @@ enabled = true
 # Disallow legacy dot index syntax.
 rule "terraform_deprecated_index" {
 enabled = true
+}
+
+# Check that all required_providers are used in the module
+rule "terraform_unused_required_providers" {
+    enabled = true
+}
+# Disallow deprecated lookup() function with only 2 arguments.
+rule "terraform_deprecated_lookup" {
+    enabled = true
 }
 
 # Disallow variables, data sources, and locals that are declared but never used.
@@ -48,6 +64,20 @@ rule "terraform_typed_variables" {
 enabled = true
 }
 
+#Disallow duplicate keys in a map object
+rule "terraform_map_duplicate_keys" {
+    enabled = true
+}
+
+# Disallow specifying a git or mercurial repository as a module source without pinning to a version
+rule "terraform_module_pinned_source" {
+    enabled = true 
+}
+# Disallow comparisons with [] when checking if a collection is empty
+rule "terraform_empty_list_equality" {
+    enabled = true
+
+}
 # Disallow specifying a git or mercurial repository as a module source without pinning to a version.
 rule "terraform_module_pinned_source" {
 enabled = true

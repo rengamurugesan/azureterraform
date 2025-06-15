@@ -10,10 +10,10 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.7.1"
     }
-    azuread = {
-      source  = "hashicorp/azuread"
-      version = ">= 3.4.0"
-    }
+    # azuread = {
+    #   source  = "hashicorp/azuread"
+    #   version = ">= 3.4.0"
+    # }
 
   }
 
