@@ -64,7 +64,7 @@ rule "terraform_typed_variables" {
 enabled = true
 }
 
-#Disallow duplicate keys in a map object
+# Disallow duplicate keys in a map object
 rule "terraform_map_duplicate_keys" {
     enabled = true
 }
