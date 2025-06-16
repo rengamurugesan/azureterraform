@@ -32,7 +32,7 @@ jobs:
         uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
-          approvers: rengamurugesan@yahoo.com # Replace with GitHub usernames, with the free version you can only have an issue assigned to one username
+          approvers: rengamurugesan # Replace with GitHub usernames, with the free version you can only have an issue assigned to one username
           minimum-approvals: 1
           issue-title: "Manual Approval Required for Terraform Apply"
           issue-body: "Please approve or deny the deployment."
