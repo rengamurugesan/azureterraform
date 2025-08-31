@@ -1,0 +1,103 @@
+#!/bin/bash
+
+# you tenant is remote tenant
+ 
+#
+
+# In order to connect it to a virtual hub, the remote virtual network can't have a gateway (ExpressRoute or VPN) or RouteServer.
+
+# Make sure that the virtual network address space in the remote tenant doesn't overlap with any other address space within any other virtual networks already connected to the parent virtual hub
+
+# In the subscription of the virtual network in the remote tenant, add the Contributor role assignment to the administrator
+ 
+# Variables - Replace with actual values
+
+vnetName="<your-vnet-name>"
+
+resourceGroup="<your-resource-group>"
+
+subscriptionId="<your-subscription-id>"
+
+parentAppId="<parent-application-id>"
+ 
+# Automatically retrieve signed-in user's object ID
+
+userPrincipal=$(az ad signed-in-user show --query objectId -o tsv)
+ 
+echo "Checking VNet Configuration..."
+
+az network vnet show \
+
+  --name $vnetName \
+
+  --resource-group $resourceGroup \
+
+  --query "{Name:name, Location:location, AddressSpace:addressSpace.addressPrefixes, DnsServers:dnsSettings.dnsServers}" \
+
+  --output table
+ 
+echo "Checking Role Assignments for Signed-in User..."
+
+az role assignment list \
+
+  --assignee $userPrincipal \
+
+  --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroup/providers/Microsoft.Network/virtualNetworks/$vnetName \
+
+  --output table
+ 
+echo "Checking Resource Provider Registration..."
+
+az provider show --namespace Microsoft.Network --query "registrationState" --output table
+ 
+echo "Checking Virtual Network Peerings (if any)..."
+
+az network vnet peering list \
+
+  --resource-group $resourceGroup \
+
+  --vnet-name $vnetName \
+
+  --output table
+ 
+echo "Checking if Virtual Network Gateway Exists..."
+
+az network vnet-gateway list \
+
+  --resource-group $resourceGroup \
+
+  --output table
+ 
+echo "Checking Azure AD Directory Roles for Current User..."
+
+az ad signed-in-user show --query "{DisplayName:displayName, UserPrincipalName:userPrincipalName}" --output table
+ 
+echo "Listing Directory Roles Assigned to the User..."
+
+az role assignment list --assignee $userPrincipal --all --output table
+ 
+echo "Attempting SPN Creation Using Parent Tenant App ID..."
+
+az ad sp create --id $parentAppId
+ 
+echo "Assigning 'Network Contributor' Role to the Application..."
+
+az role assignment create --assignee $parentAppId --role "Network Contributor" --scope /subscriptions/$subscriptionId/resourceGroups/$resourceGroup
+ 
+echo "Retrieving VNet Resource ID..."
+
+vnetResourceId=$(az network vnet show --name $vnetName --resource-group $resourceGroup --query id -o tsv)
+ 
+echo "Retrieving Remote Tenant ID..."
+
+remoteTenantId=$(az account show --query tenantId -o tsv)
+ 
+echo ""
+
+echo "Final Output:"
+
+echo "Remote Tenant ID: $remoteTenantId"
+
+echo "VNet Resource ID: $vnetResourceId"
+
+ 
