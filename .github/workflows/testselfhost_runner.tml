@@ -7,4 +7,4 @@
         runs-on: self-hosted
         steps:
           - name: Run a command
-            run: echo "Hello from my self-hosted runner!"
+            run: echo "Hello from my self-hosted runner...!"
